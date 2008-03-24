@@ -1,5 +1,11 @@
 2008-03-24  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
 
+	* NEWS:
+
+	First release 0.1
+	
+2008-03-24  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
+
 	* Move repositoryhandler to its own module
 	
 2008-03-13  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>

@@ -1,3 +1,5 @@
 SUBDIRS = repositoryhandler tests
 
-EXTRA_DIST = README
+EXTRA_DIST = 	\
+	README	\
+	COPYING
