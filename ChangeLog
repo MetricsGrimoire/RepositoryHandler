@@ -1,5 +1,11 @@
 2008-04-02  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
 
+	* repositoryhandler/backends/svn.py:
+
+	Make sure uri is the repository root when creating a svn repo.
+	
+2008-04-02  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
+
 	* repositoryhandler/backends/cvs.py:
 
 	Document uri parameter in cvs checkout.

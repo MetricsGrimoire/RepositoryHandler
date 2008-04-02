@@ -83,7 +83,13 @@ class SVNRepository (Repository):
     '''SVN Repository'''
 
     def __init__ (self, uri):
-        Repository.__init__ (self, uri, 'svn')
+        try:
+            info = get_info (uri)
+            root = info['repository root']
+        except:
+            root = uri
+            
+        Repository.__init__ (self, root, 'svn')
 
     def _check_uri (self, uri):
         def is_local (uri):
