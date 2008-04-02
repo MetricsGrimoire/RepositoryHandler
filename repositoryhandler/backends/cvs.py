@@ -56,6 +56,13 @@ class CVSRepository (Repository):
                     '(expected %s but got %s)' % (srcdir, self.uri, uri))
 
     def checkout (self, uri, rootdir, newdir = None, branch = None, rev = None):
+        '''Checkout a module or path from repository
+
+        @param uri: Module or path to check out. When using as a path
+            it should be relative to the module being the module name
+            the root. modulename/path/to/file
+        '''
+        
         # TODO: In CVS branch and rev are incompatible, we should 
         # raise an exception if both parameters are provided and 
         # use them, it doesn't matter which, when only one is provided.
