@@ -68,7 +68,7 @@ class CVSRepository (Repository):
         # use them, it doesn't matter which, when only one is provided.
         if newdir is not None:
             srcdir = os.path.join (rootdir, newdir)
-        elif uri == '.':
+        elif newdir == '.' or uri == '.':
             srcdir = rootdir
         else:
             srcdir = os.path.join (rootdir, uri)

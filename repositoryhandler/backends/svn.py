@@ -130,6 +130,8 @@ class SVNRepository (Repository):
     def checkout (self, module, rootdir, newdir = None, branch = None, rev = None):
         if newdir is not None:
             srcdir = os.path.join (rootdir, newdir)
+        elif newdir == '.':
+            srcdir = rootdir
         else:
             if module == '.':
                 srcdir = os.path.join (rootdir, os.path.basename (self.uri.rstrip ('/')))

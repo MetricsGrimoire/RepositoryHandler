@@ -120,6 +120,8 @@ class GitRepository (Repository):
     def checkout (self, module, rootdir, newdir = None, branch = None, rev = None):
         if newdir is not None:
             srcdir = os.path.join (rootdir, newdir)
+        elif newdir == '.':
+            srcdir = rootdir
         else:
             srcdir = os.path.join (rootdir, module)
         if os.path.exists (srcdir):
