@@ -218,7 +218,8 @@ class TarballRepository (Repository):
             tarball_path = module
         else:
             # Download module to rootdir
-            tarball_path = os.path.join (srcdir, os.path.basename (module))
+            filename = os.path.basename (module).split ('?')[0]
+            tarball_path = os.path.join (srcdir, filename)
             cmd = get_download_command (module, tarball_path, '/dev/stdout')
             if cmd is None:
                 return

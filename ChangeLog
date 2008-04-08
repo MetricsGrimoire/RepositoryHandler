@@ -1,5 +1,11 @@
 2008-04-08  Santiago Dueñas Dominguez  <sduenas@gsyc.escet.urjc.es>
 
+	* repositoryhandler/backends/tarball.py:
+	
+	Delete uri parameters from the destination path
+
+2008-04-08  Santiago Dueñas Dominguez  <sduenas@gsyc.escet.urjc.es>
+
 	* repositoryhandler/backends/cvs.py:
 	* repositoryhandler/backends/git.py:
 	* repositoryhandler/backends/svn.py:
