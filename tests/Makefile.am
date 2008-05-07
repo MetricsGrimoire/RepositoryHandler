@@ -3,6 +3,7 @@ noinst_SCRIPTS = run_test.py		\
 		 run_thread_test.py
 
 tests = __init__.py	\
+	bzr.py		\
 	cvs.py		\
 	git.py		\
 	svn.py		\
