@@ -1,3 +1,9 @@
+2008-05-07  Santiago Dueñas Dominguez  <sduenas@gsyc.escet.urjc.es>
+
+	* repositoryhandler/backends/svn.py:
+	
+	Added parameter to force the update of an uri.
+
 2008-05-07  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
 
 	* repositoryhandler/backends/Makefile.am:

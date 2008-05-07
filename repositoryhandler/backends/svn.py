@@ -167,21 +167,17 @@ class SVNRepository (Repository):
         command = Command (cmd, rootdir)
         self._run_command (command, CHECKOUT)
 
-    def update (self, uri, rev = None):
-        self._check_uri (uri)
+    def update (self, uri, rev = None, force = False):
+        if not force:
+            self._check_uri (uri)
 
         cmd = ['svn', 'update']
 
         if rev is not None:
             cmd.extend (['-r', rev])
-
-        if os.path.isfile (uri):
-            directory = os.path.dirname (uri)
-        else:
-            directory = uri
-
-        cmd.append ('.')
-        command = Command (cmd, directory)
+        
+        cmd.append (uri)
+        command = Command (cmd)
         self._run_command (command, UPDATE)
 
     def log (self, uri, branch = None, rev = None, files = None):
