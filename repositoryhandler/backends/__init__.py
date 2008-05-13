@@ -134,7 +134,7 @@ def create_repository (backend_name, uri):
 
 def create_repository_from_path (path):
     rep = None
-    repo_types = ['cvs', 'svn', 'git']
+    repo_types = ['cvs', 'svn', 'git', 'bzr']
     for repo_type in repo_types:
         try:
             backend = 'repositoryhandler.backends.%s' % repo_type

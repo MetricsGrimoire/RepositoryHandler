@@ -27,7 +27,7 @@ def get_repository_from_path (path):
     if os.path.isfile (path):
         path = os.path.dirname (path)
 
-    pattern = re.compile ("^[ \t]*parent branch:(.*)$")
+    pattern = re.compile ("^[ \t]*(checkout of)?(parent)? branch:(.*)$")
     uri = None
     
     try:
@@ -41,9 +41,8 @@ def get_repository_from_path (path):
             if not match:
                 continue
             
-            uri = match.group (1).strip ()
+            uri = match.group (3).strip ()
             break
-        
     except CommandError:
         raise RepositoryInvalidWorkingCopy ('"%s" does not appear to be a Bzr working copy' % path)
 

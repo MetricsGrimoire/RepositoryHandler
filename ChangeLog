@@ -1,9 +1,17 @@
+2008-05-13  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
+
+	* repositoryhandler/backends/__init__.py:
+	* repositoryhandler/backends/bzr.py:
+	* repositoryhandler/backends/git.py:
+
+	Fix detection of bazar repositories by a path.
+	
 2008-05-07  Santiago Dueñas Dominguez  <sduenas@gsyc.escet.urjc.es>
 
 	* repositoryhandler/backends/svn.py:
-	
-	Added parameter to force the update of an uri.
 
+	Added parameter to force the update of an uri.
+	
 2008-05-07  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
 
 	* repositoryhandler/backends/Makefile.am:

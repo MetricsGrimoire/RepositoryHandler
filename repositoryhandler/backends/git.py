@@ -59,7 +59,7 @@ def get_repository_from_path (path):
     except CommandError:
         raise RepositoryInvalidWorkingCopy ('"%s" does not appear to be a Git working copy' % path)
 
-    if uri is None:
+    if uri is None or not uri:
         raise RepositoryInvalidWorkingCopy ('"%s" does not appear to be a Git working copy' % path)
 
     return 'git', uri
