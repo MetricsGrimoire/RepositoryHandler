@@ -165,7 +165,7 @@ class GitRepository (Repository):
         command = Command (cmd, directory)
         self._run_command (command, UPDATE)
 
-    def log (self, uri, branch = None, rev = None, files = None):
+    def log (self, uri, rev = None, files = None):
         self._check_uri (uri)
 
         if os.path.isfile (uri):
@@ -177,10 +177,10 @@ class GitRepository (Repository):
         else:
             cwd = os.getcwd ()
         
-        cmd = ['git', 'log', '--pretty=fuller', '-r', '--name-status', '-M', '-C']
+        cmd = ['git', 'log', '--all', '--pretty=fuller', '-r', '--name-status', '-M', '-C']
 
-        if branch is not None:
-            cmd.append (branch)
+        if rev is not None:
+            cmd.append (rev)
 
         if files is not None:
             for file in files:

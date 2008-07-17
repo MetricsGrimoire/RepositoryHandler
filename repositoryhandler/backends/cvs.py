@@ -110,7 +110,7 @@ class CVSRepository (Repository):
         command = Command (cmd,directory)
         self._run_command (command, UPDATE)
 
-    def log (self, uri, branch = None, rev = None, files = None):
+    def log (self, uri, rev = None, files = None):
         self._check_srcdir (uri)
 
         cmd = ['cvs', '-z3', '-q', '-d', self.uri, 'log', '-N']

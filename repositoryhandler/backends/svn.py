@@ -19,7 +19,8 @@
 import os
 
 from repositoryhandler.Command import Command, CommandError
-from repositoryhandler.backends import Repository, RepositoryInvalidWorkingCopy, register_backend
+from repositoryhandler.backends import (Repository, RepositoryInvalidWorkingCopy,
+                                        RepositoryInvalidBranch, register_backend)
 from repositoryhandler.backends.watchers import *
 
 def get_info (uri):
@@ -106,25 +107,21 @@ class SVNRepository (Repository):
                 raise RepositoryInvalidWorkingCopy ('"%s" does not appear to be a SVN working copy '
                                                     'for repository %s' % (uri, self.uri))
 
-    def __get_uri_from_branch (self, module, branch):
-        if branch is not None:
-            uri = os.path.join (self.uri, 'branches', branch)
-        else:
+    def __get_uri_for_branch (self, module, branch):
+        if branch is None:
+            uri = os.path.join (self.uri, module)
+        elif branch == 'trunk':
             uri = os.path.join (self.uri, 'trunk')
+        else:
+            uri = os.path.join (self.uri, 'branches', branch)
 
         try:
             info = get_info (uri)
             if info is not None:
                 return uri
         except CommandError:
-            # Repo probably uses second layout
-            pass
+            raise RepositoryInvalidBranch ('Invalid branch name "%s" for repository %s' % (branch, self.uri))
         
-        if branch is not None:
-            uri = os.path.join (self.uri, module, 'branches', branch)
-        else:
-            uri = os.path.join (self.uri, module, 'trunk')
-                
         return uri
 
     def checkout (self, module, rootdir, newdir = None, branch = None, rev = None):
@@ -150,7 +147,7 @@ class SVNRepository (Repository):
         if module == '.':
             uri = self.uri
         else:
-            uri = self.__get_uri_from_branch (module, branch)
+            uri = self.__get_uri_for_branch (module, branch)
         
         cmd = ['svn', 'checkout', uri]
 
@@ -180,7 +177,7 @@ class SVNRepository (Repository):
         command = Command (cmd)
         self._run_command (command, UPDATE)
 
-    def log (self, uri, branch = None, rev = None, files = None):
+    def log (self, uri, rev = None, files = None):
         self._check_uri (uri)
 
         if os.path.isfile (uri):
@@ -191,39 +188,8 @@ class SVNRepository (Repository):
             target = '.'
         else:
             cwd = os.getcwd ()
+            target = uri
 
-        if uri.strip ('/') == self.uri:
-            target = self.uri
-        elif uri.startswith (self.uri):
-            # Remote URI
-            if uri.find ('trunk') >= 0 or uri.find ('branches') >= 0:
-                target = uri
-            else:
-                if branch is not None:
-                    target = os.path.join (uri, 'branches', branch)
-                else:
-                    target = os.path.join (uri, 'trunk')
-
-                try:
-                    info = get_info (target)
-                    if info is None:
-                        target = None
-                except CommandError:
-                    # Repo probably uses second layout
-                    target = None
-
-                if target is None:
-                    # Use the second layout
-                    target = self.uri
-                    modules = self.get_modules ()
-                    if files is None:
-                        files = []
-                    for module in modules:
-                        if branch is not None:
-                            files.append (os.path.join ('branches', branch, module))
-                        else:
-                            files.append (os.path.join (module, 'trunk'))
-        
         cmd = ['svn', '-v', 'log']
 
         if rev is not None:
@@ -253,9 +219,7 @@ class SVNRepository (Repository):
         else:
             cwd = os.getcwd ()
 
-        if uri.strip ('/') == self.uri:
-            target = self.uri
-        elif uri.startswith (self.uri):
+        if uri.startswith (self.uri):
             # Remote URI
             if uri.find ('trunk') >= 0 or uri.find ('branches') >= 0:
                 target = uri
@@ -265,26 +229,6 @@ class SVNRepository (Repository):
                 else:
                     target = os.path.join (uri, 'trunk')
 
-                try:
-                    info = get_info (target)
-                    if info is None:
-                        target = None
-                except CommandError:
-                    # Repo probably uses second layout
-                    target = None
-
-                if target is None:
-                    # Use the second layout
-                    target = self.uri
-                    modules = self.get_modules ()
-                    if files is None:
-                        files = []
-                    for module in modules:
-                        if branch is not None:
-                            files.append (os.path.join ('branches', branch, module))
-                        else:
-                            files.append (os.path.join (module, 'trunk'))
-                    
         cmd = ['svn', 'diff']
 
         if revs is not None:

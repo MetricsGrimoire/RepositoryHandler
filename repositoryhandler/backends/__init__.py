@@ -31,6 +31,9 @@ class RepositoryUnknownError (Exception):
 class RepositoryInvalidWorkingCopy (Exception):
     '''Invalid Working Copy directory'''
 
+class RepositoryInvalidBranch (Exception):
+    '''Invalid Branch'''
+    
 class InvalidWatch (Exception):
     '''Invalid watch type'''
 
@@ -56,7 +59,7 @@ class Repository:
         '''Update a working copy uri'''
         raise NotImplementedError
 
-    def log (self, uri, branch = None, rev = None, files = None):
+    def log (self, uri, rev = None, files = None):
         '''Return log for working copy uri'''
         raise NotImplementedError
 

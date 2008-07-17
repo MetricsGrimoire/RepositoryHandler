@@ -11,7 +11,7 @@ class SVNTest (Test):
     def checkout (self):
         # checkout
         self.repo = create_repository ('svn', 'http://svn.gnome.org/svn/gnome-common')
-        self.repo.checkout ('gnome-common', '/tmp/')
+        self.repo.checkout ('gnome-common', '/tmp/', branch = "trunk")
         if not os.path.exists ('/tmp/gnome-common/.svn'):
             print "SVN checkout: FAILED"
             return
@@ -37,7 +37,7 @@ class SVNTest (Test):
         try:
             # Repository without trunk dir
             repo2 = create_repository ('svn', 'https://svn.forge.morfeo-project.org/svn/libresoft-tools')
-            repo2.checkout ('octopus', '/tmp/')
+            repo2.checkout ('octopus/trunk', '/tmp/', newdir = 'octopus')
             if not os.path.exists ('/tmp/octopus/.svn'):
                 print "SVN checkout repo without /trunk: FAILED"
                 return
@@ -49,9 +49,9 @@ class SVNTest (Test):
         
         try:
             # Download unconditionally the whole repo
-            repo3 = create_repository ('svn', 'https://atunes.svn.sourceforge.net/svnroot/atunes/')
+            repo3 = create_repository ('svn', 'http://svn.gnome.org/svn/asyncworker')
             repo3.checkout ('.', '/tmp/')
-            if not os.path.exists ('/tmp/atunes/.svn'):
+            if not os.path.exists ('/tmp/asyncworker/.svn'):
                 print "SVN checkout the whole repo: FAILED"
                 return
         except:
@@ -93,7 +93,7 @@ class SVNTest (Test):
         try:
             # Using an URI
             self.log_data = ""
-            self.repo.log ('http://svn.gnome.org/svn/gnome-common', files = ['ChangeLog'])
+            self.repo.log ('http://svn.gnome.org/svn/gnome-common/trunk', files = ['ChangeLog'])
         except:
             print "SVN log: FAILED"
             return
@@ -106,7 +106,7 @@ class SVNTest (Test):
         repo2.add_watch (LOG, log_cb)
         try:
             self.log_data = ""
-            repo2.log ('https://svn.forge.morfeo-project.org/svn/libresoft-tools')
+            repo2.log ('https://svn.forge.morfeo-project.org/svn/libresoft-tools/octopus/trunk')
         except:
             print "SVN log: FAILED"
             return
@@ -172,6 +172,5 @@ class SVNTest (Test):
         remove_directory ('/tmp/gnome-common-2.16')
         remove_directory ('/tmp/octopus/')
         remove_directory ('/tmp/atunes')
-        pass
 
 register_test ('svn', SVNTest)

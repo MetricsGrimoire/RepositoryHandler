@@ -1,3 +1,16 @@
+2008-07-17  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
+
+	* repositoryhandler/backends/__init__.py:
+	* repositoryhandler/backends/bzr.py:
+	* repositoryhandler/backends/cvs.py:
+	* repositoryhandler/backends/git.py:
+	* repositoryhandler/backends/svn.py:
+	* tests/svn.py:
+
+	Remove branch parameter of log method. Do not guess the svn layout
+	when checking out, since it causes more problems that it
+	solves. Tests have been updated according to the new behaviour. 
+	
 2008-05-13  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
 
 	* repositoryhandler/backends/__init__.py:
