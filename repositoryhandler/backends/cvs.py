@@ -113,7 +113,7 @@ class CVSRepository (Repository):
     def log (self, uri, rev = None, files = None):
         self._check_srcdir (uri)
 
-        cmd = ['cvs', '-z3', '-q', '-d', self.uri, 'log', '-N']
+        cmd = ['cvs', '-z3', '-q', '-d', self.uri, 'log']
 
         if rev is not None:
             cmd.extend (['-r', rev])

@@ -1,3 +1,10 @@
+2008-07-21  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
+
+	* repositoryhandler/backends/cvs.py:
+
+	Remove the -N option from the cvs log command since we are now
+	interested in the tag list.
+	
 2008-07-18  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
 
 	* repositoryhandler/backends/git.py:
