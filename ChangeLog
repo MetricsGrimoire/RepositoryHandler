@@ -1,3 +1,9 @@
+2008-07-18  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
+
+	* repositoryhandler/backends/git.py:
+
+	Do not use any file path when not provided in git log.
+	
 2008-07-17  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
 
 	* repositoryhandler/backends/__init__.py:

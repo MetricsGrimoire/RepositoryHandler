@@ -173,7 +173,6 @@ class GitRepository (Repository):
             files = [os.path.basename (uri)]
         elif os.path.isdir (uri):
             cwd = uri
-            files = ['.']
         else:
             cwd = os.getcwd ()
         
