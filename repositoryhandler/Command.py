@@ -115,7 +115,7 @@ class Command:
                         if parser_error_func is not None:
                            parser_error_func (err_data[:pos + 1])
                         else:
-                            sys.stderr.write (out_data[:pos + 1])
+                            sys.stderr.write (err_data[:pos + 1])
                         err_data = err_data[pos + 1:]
 
                 try:
