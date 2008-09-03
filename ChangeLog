@@ -1,5 +1,12 @@
 2008-09-03  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
 
+	* repositoryhandler/backends/__init__.py:
+
+	Add a debug option to be able to know what commands are being
+	executed by rh.
+	
+2008-09-03  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
+
 	* repositoryhandler/backends/cvs.py:
 
 	Fix update of files in cvs.

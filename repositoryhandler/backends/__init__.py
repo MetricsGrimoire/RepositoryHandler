@@ -18,6 +18,8 @@
 
 from repositoryhandler.backends.watchers import *
 
+DEBUG = False
+
 __all__ = [
         'Repository',
         'create_repository',
@@ -113,6 +115,9 @@ class Repository:
         def callback (data):
             self.__run_callbacks (type, data)
 
+        if DEBUG:
+            print command.cmd
+            
         command.run (callback)
 
 _backends = {}
