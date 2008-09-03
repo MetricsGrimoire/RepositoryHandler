@@ -1,3 +1,9 @@
+2008-09-03  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
+
+	* repositoryhandler/backends/cvs.py:
+
+	Fix update of files in cvs.
+	
 2008-08-27  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
 
 	* repositoryhandler/Command.py:

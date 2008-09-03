@@ -101,12 +101,13 @@ class CVSRepository (Repository):
         if rev is not None:
             cmd.extend (['-r', rev])
 
-        if os.path.isfile(uri):
+        if os.path.isfile (uri):
             directory = os.path.dirname (uri)
+            cmd.append (os.path.basename (uri))
         else:
             directory = uri
+            cmd.append ('.')
             
-        cmd.append ('.')
         command = Command (cmd,directory)
         self._run_command (command, UPDATE)
 
