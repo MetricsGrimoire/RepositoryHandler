@@ -1,3 +1,10 @@
+2008-09-08  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
+
+	* repositoryhandler/backends/cvs.py:
+	* tests/cvs.py:
+
+	Implement get_last_revision() in the CVS backend.
+	
 2008-09-03  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
 
 	* repositoryhandler/backends/__init__.py:

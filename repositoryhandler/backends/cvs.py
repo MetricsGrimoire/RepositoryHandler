@@ -161,8 +161,24 @@ class CVSRepository (Repository):
         return []
 
     def get_last_revision (self, uri):
-        #Not supported by CVS
-        return None
+        self._check_srcdir (uri)
+
+        if not os.path.isfile (uri):
+            return None
+
+        filename = os.path.basename (uri)
+        path = os.path.dirname (uri)
+        
+        cmd = ['cvs', 'status', filename]
+        command = Command (cmd, path)
+        out = command.run_sync ()
+
+        retval = None
+        for line in out.splitlines ():
+            if "Working revision:" in line:
+                retval = line.split (":", 1)[1].strip ()
+            
+        return retval
 
 register_backend ('cvs', CVSRepository)
 

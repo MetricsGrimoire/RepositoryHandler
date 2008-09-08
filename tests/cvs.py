@@ -91,6 +91,17 @@ class CVSTest (Test):
         except:
             print "CVS diff: FAILED"
 
+    def get_last_revision (self):
+        try:
+            rev = self.repo.get_last_revision ('/tmp/poppler/ChangeLog')
+            if rev is not None:
+                print "CVS get_last_revision (%s): PASSED" % (rev)
+                return
+        except:
+            pass
+
+        print "CVS get_last_revision: FAILED"
+
     def clean (self):
         remove_directory ('/tmp/poppler')
         remove_directory ('/tmp/poppler-0.5')
