@@ -1,3 +1,9 @@
+2008-09-16  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
+
+	* repositoryhandler/backends/cvs.py:
+
+	Fix get_last_revision for some versions of cvs.
+	
 2008-09-08  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
 
 	* repositoryhandler/backends/cvs.py:

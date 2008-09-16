@@ -176,7 +176,7 @@ class CVSRepository (Repository):
         retval = None
         for line in out.splitlines ():
             if "Working revision:" in line:
-                retval = line.split (":", 1)[1].strip ()
+                retval = line.split (":", 1)[1].strip ().split ()[0]
             
         return retval
 
