@@ -65,6 +65,10 @@ class Repository:
         '''Return log for working copy uri'''
         raise NotImplementedError
 
+    def rlog (self, module = None, rev = None, files = None):
+        '''Return log directly from the repository server'''
+        raise NotImplementedError
+
     def diff (self, uri, branch = None, revs = None, files = None):
         '''Return diff for files in working copy betweeen revisions'''
         raise NotImplementedError

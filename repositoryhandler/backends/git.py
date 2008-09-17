@@ -190,6 +190,10 @@ class GitRepository (Repository):
         command = Command (cmd, cwd, env = {'PAGER' : ''})
         self._run_command (command, LOG)
 
+    def rlog (self, module = None, rev = None, files = None):
+        # Not supported by Git
+        return
+
     def diff (self, uri, branch = None, revs = None, files = None):
         # TODO
         pass

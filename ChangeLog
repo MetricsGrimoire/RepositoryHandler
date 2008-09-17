@@ -1,3 +1,16 @@
+2008-09-17  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
+
+	* repositoryhandler/backends/__init__.py:
+	* repositoryhandler/backends/bzr.py:
+	* repositoryhandler/backends/cvs.py:
+	* repositoryhandler/backends/git.py:
+	* repositoryhandler/backends/svn.py:
+	* tests/cvs.py:
+	* tests/svn.py:
+
+	Add a rlog method to the API to be able to get the log directly
+	from the repository. Only supported by cvs and svn.
+	
 2008-09-16  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
 
 	* repositoryhandler/backends/cvs.py:

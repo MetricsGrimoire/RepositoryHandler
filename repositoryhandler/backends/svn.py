@@ -207,6 +207,14 @@ class SVNRepository (Repository):
         command = Command (cmd, cwd, env = {'LC_ALL' : 'C'})
         self._run_command (command, LOG)
 
+    def rlog (self, module = None, rev = None, files = None):
+        if module is not None:
+            uri = os.path.join (self.uri, module.strip ("/"))
+        else:
+            uri = self.uri
+
+        self.log (uri, rev, files)
+
     def diff (self, uri, branch = None, revs = None, files = None):
         self._check_uri (uri)
 

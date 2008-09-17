@@ -80,13 +80,27 @@ class CVSTest (Test):
             print "CVS log: PASSED"
         else:
             print "CVS log: FAILED"
+            return
+
+        # Remote log
+        try:
+            self.log_data = ""
+            self.repo.rlog ('poppler', files = ['ChangeLog'])
+        except:
+            print "CVS rlog: FAILED"
+            return
+
+        if len (self.log_data) > 0:
+            print "CVS rlog: PASSED"
+        else:
+            print "CVS rlog: FAILED"
 
     def diff (self):
         try:
             self.repo.diff ('/tmp/poppler', revs = ['POPPLER_0_5_X'])
             self.repo.diff ('/tmp/poppler', revs = ['HEAD'])
-            self.repo.diff ('/tmp/poppler', revs = ['1.1.1.1', '1.2'])
-            self.repo.diff ('/tmp/poppler', revs = ['1.1.1.1', '1.2'], files = ['ChangeLog'])
+            self.repo.diff ('/tmp/poppler', revs = ['1.1', '1.2'])
+            self.repo.diff ('/tmp/poppler', revs = ['1.1', '1.2'], files = ['ChangeLog'])
             print "CVS diff: PASSED"
         except:
             print "CVS diff: FAILED"

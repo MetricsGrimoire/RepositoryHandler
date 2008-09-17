@@ -106,15 +106,15 @@ class SVNTest (Test):
         repo2.add_watch (LOG, log_cb)
         try:
             self.log_data = ""
-            repo2.log ('https://svn.forge.morfeo-project.org/svn/libresoft-tools/octopus/trunk')
+            repo2.rlog ('octopus/trunk')
         except:
-            print "SVN log: FAILED"
+            print "SVN rlog: FAILED"
             return
 
         if len (self.log_data) <= 0:
-            print "SVN log: FAILED"
+            print "SVN rlog: FAILED"
         else:    
-            print "SVN log: PASSED"
+            print "SVN rlog: PASSED"
 
     def diff (self):
         try:

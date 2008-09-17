@@ -130,6 +130,10 @@ class BzrRepository (Repository):
         command = Command (cmd, cwd)
         self._run_command (command, LOG)
 
+    def rlog (self, module = None, rev = None, files = None):
+        # TODO: is it supported by bzr???
+        return
+
     def diff (self, uri, branch = None, revs = None, files = None):
         # TODO
         pass

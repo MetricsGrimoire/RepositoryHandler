@@ -133,6 +133,21 @@ class CVSRepository (Repository):
         command = Command (cmd, directory)
         self._run_command (command, LOG)
 
+    def rlog (self, module, rev = None, files = None):
+        cmd = ['cvs', '-z3', '-q', '-d', self.uri, 'rlog']
+
+        if rev is not None:
+            cmd.extend (['-r', rev])
+
+        if files is not None:
+            for file in files:
+                cmd.append (os.path.join (module, file))
+        else:
+            cmd.append (module)
+
+        command = Command (cmd)
+        self._run_command (command, LOG)
+
     def diff (self, uri, branch = None, revs = None, files = None):
         self._check_srcdir (uri)
 
@@ -143,17 +158,17 @@ class CVSRepository (Repository):
                 cmd.extend (['-r', rev])
 
         if os.path.isfile (uri):
-            directory = os.path.dirname (uri)
+            cwd = os.path.dirname (uri)
         else:
-            directory = uri
+            cwd = uri
 
         if files is not None:
             for file in files:
                 cmd.append (file)
         else:
-            cmd.append (directory)
+            cmd.append ('.')
 
-        command = Command (cmd)
+        command = Command (cmd, cwd)
         self._run_command (command, DIFF)
 
     def get_modules (self):
