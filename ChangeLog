@@ -1,3 +1,12 @@
+2008-09-22  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
+
+	* repositoryhandler/backends/svn.py:
+	* tests/svn.py:
+
+	Use uri@rev instead of -r rev for checking out in svn backend
+	since it works better (ie it's possible to download a removed path
+	to its first revision). Thanks to Luis Cañas!
+	
 2008-09-17  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
 
 	* repositoryhandler/backends/__init__.py:

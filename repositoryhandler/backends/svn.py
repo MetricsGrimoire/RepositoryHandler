@@ -148,7 +148,10 @@ class SVNRepository (Repository):
             uri = self.uri
         else:
             uri = self.__get_uri_for_branch (module, branch)
-        
+
+        if rev is not None:
+            uri += "@%s" % (rev)
+            
         cmd = ['svn', 'checkout', uri]
 
         if newdir is not None:
@@ -157,9 +160,6 @@ class SVNRepository (Repository):
             cmd.append (os.path.basename (uri.rstrip ('/')))
         else:
             cmd.append (module)
-
-        if rev is not None:
-            cmd.extend (['-r', rev])
 
         command = Command (cmd, rootdir)
         self._run_command (command, CHECKOUT)

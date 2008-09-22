@@ -11,8 +11,9 @@ class SVNTest (Test):
     def checkout (self):
         # checkout
         self.repo = create_repository ('svn', 'http://svn.gnome.org/svn/gnome-common')
-        self.repo.checkout ('gnome-common', '/tmp/', branch = "trunk")
-        if not os.path.exists ('/tmp/gnome-common/.svn'):
+        self.repo.checkout ('gnome-common', '/tmp/', branch = "trunk", rev = "3910")
+        if not os.path.exists ('/tmp/gnome-common/.svn') or \
+                self.repo.get_last_revision ('/tmp/gnome-common') != "3910":
             print "SVN checkout: FAILED"
             return
         
