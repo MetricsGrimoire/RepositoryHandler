@@ -57,8 +57,17 @@ class Command:
         return None
         
     def run (self, parser_out_func = None, parser_error_func = None):
+        def _read (fd, buffsize):
+            while True:
+                try:
+                    return os.read (fd, buffsize)
+                except OSError, e:
+                    if e.errno == errno.EINTR:
+                        continue
+                    else:
+                        raise
+                    
         kws = { 'close_fds': True,
-                'stdin'    : subprocess.PIPE,
                 'stdout'   : subprocess.PIPE,
                 'stderr'   : subprocess.PIPE,
                 'env'      : os.environ.copy ()
@@ -77,19 +86,20 @@ class Command:
 
         read_set = [p.stdout, p.stderr]
         
-        out_data = err_data = ''
+        out_data = err_data = ""
         try:
             while read_set:
                 try:
                     rlist, wlist, xlist = select.select (read_set, [], [])
                 except select.error, e:
                     # Ignore interrupted system call, reraise anything else
-                    if e[0] != errno.EINTR:
-                        raise
+                    if e.args[0] == errno.EINTR:
+                        continue
+                    raise
 
                 if p.stdout in rlist:
-                    out_chunk = os.read (p.stdout.fileno (), 1024)
-                    if out_chunk == '':
+                    out_chunk = _read (p.stdout.fileno (), 1024)
+                    if out_chunk == "":
                         p.stdout.close ()
                         read_set.remove (p.stdout)
                     out_data += out_chunk
@@ -103,9 +113,9 @@ class Command:
                         out_data = out_data[pos + 1:]
         
                 if p.stderr in rlist:
-                    err_chunk = os.read (p.stderr.fileno (), 1024)
+                    err_chunk = _read (p.stderr.fileno (), 1024)
                     
-                    if err_chunk == '':
+                    if err_chunk == "":
                         p.stderr.close ()
                         read_set.remove (p.stderr)
                     err_data += err_chunk
@@ -118,13 +128,6 @@ class Command:
                             sys.stderr.write (err_data[:pos + 1])
                         err_data = err_data[pos + 1:]
 
-                try:
-                    select.select ([],[],[],.1) # give a little time for buffers to fill
-                except select.error, e:
-                    # Ignore interrupted system call, reraise anything else
-                    if e[0] != errno.EINTR:
-                        raise
-                
         except KeyboardInterrupt:
             try:
                 os.kill (p.pid, SIGINT)
@@ -144,7 +147,6 @@ class Command:
         
         raise CommandError ('Error running %s' % self.cmd, p.returncode)
 
-
 if __name__ == '__main__':
     # Valid command without cwd
     cmd = Command (['ls', '-l'])
@@ -163,4 +165,6 @@ if __name__ == '__main__':
 
     # Run sync
     cmd = Command (['ls'], '/tmp/')
-    print cmd.run_sync ()
+    print cmd.run_sync ()    
+
+
