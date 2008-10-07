@@ -198,6 +198,33 @@ class GitRepository (Repository):
         # TODO
         pass
 
+    def blame (self, uri, rev = None, files = None):
+        self._check_uri (uri)
+
+        if os.path.isfile (uri):
+            cwd = os.path.dirname (uri)
+            files = [os.path.basename (uri)]
+        elif os.path.isdir (uri):
+            cwd = uri
+        else:
+            cwd = os.getcwd ()
+
+        cmd = ['git', 'blame', '--root', '-l', '-t']
+
+        if rev is not None:
+            cmd.append (rev)
+        else:
+            cmd.append ('origin')
+
+        if files is not None:
+            for file in files:
+                cmd.append (file)
+        else:
+            cmd.append (uri)
+
+        command = Command (cmd, cwd, env = {'PAGER' : ''})
+        self._run_command (command, BLAME)
+
     def get_modules (self):
         #Not supported by Git
         return []

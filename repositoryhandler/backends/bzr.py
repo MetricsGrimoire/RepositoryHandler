@@ -138,6 +138,10 @@ class BzrRepository (Repository):
         # TODO
         pass
 
+    def blame (self, uri, rev = None, files = None):
+        # TODO
+        pass
+
     def get_modules (self):
         #Not supported by Bzr
         return []

@@ -73,6 +73,10 @@ class Repository:
         '''Return diff for files in working copy betweeen revisions'''
         raise NotImplementedError
 
+    def blame (self, uri, rev = None, files = None):
+        '''Return blame/annotate for files'''
+        raise NotImplementedError
+
     def get_modules (self):
         '''Return the list of modules of the repository'''
         raise NotImplementedError

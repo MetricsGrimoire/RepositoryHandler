@@ -1,8 +1,9 @@
-N_WATCHES = 4
+N_WATCHES = 5
 
 (
     CHECKOUT,
     UPDATE, 
     LOG, 
-    DIFF
+    DIFF,
+    BLAME
 ) = range (N_WATCHES)

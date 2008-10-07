@@ -132,6 +132,30 @@ class SVNTest (Test):
         except:
             print "SVN diff: FAILED"
 
+    def blame (self):
+        try:
+            # Local path with single file
+            self.repo.blame ('/tmp/gnome-common/ChangeLog', rev = '3900')
+        except:
+            print "SVN blame: FAILED"
+            return
+
+        try:
+            # Local path several files
+            self.repo.blame ('/tmp/gnome-common/', files = ['autogen.sh', 'ChangeLog'])
+        except:
+            print "SVN blame: FAILED"
+            return
+
+        try:
+            # Remote uri
+            self.repo.blame ('http://svn.gnome.org/svn/gnome-common/trunk/ChangeLog', rev = '3901')
+        except:
+            print "SVN blame: FAILED"
+            return
+
+        print "SVN blame: PASSED"
+
     def get_modules (self):
         try:
             # First layout

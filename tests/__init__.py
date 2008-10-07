@@ -19,7 +19,13 @@ class Test:
     def log (self):
         pass
 
+    def rlog (self):
+        pass
+
     def diff (self):
+        pass
+
+    def blame (self):
         pass
 
     def get_modules (self):
@@ -36,6 +42,7 @@ class Test:
         self.update ()
         self.log ()
         self.diff ()
+        self.blame ()
         self.get_modules ()
         self.get_last_revision ()
         self.clean ()

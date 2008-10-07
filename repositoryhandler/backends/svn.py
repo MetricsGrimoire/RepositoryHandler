@@ -257,6 +257,40 @@ class SVNRepository (Repository):
         command = Command (cmd, cwd, env = {'LC_ALL' : 'C'})
         self._run_command (command, DIFF)
 
+    def blame (self, uri, rev = None, files = None):
+        # In SVN the path already contains the branch info
+        # so no need for a branch parameter
+        self._check_uri (uri)
+
+        if os.path.isfile (uri):
+            cwd = os.path.dirname (uri)
+            target = os.path.basename (uri)
+        elif os.path.isdir (uri):
+            cwd = uri
+            target = '.'
+        else:
+            cwd = os.getcwd ()
+            target = uri
+
+        if rev is not None and target != '.':
+            target += "@%s" % (rev)
+            
+        cmd = ['svn', '-v', 'blame']
+        
+        if files is not None:
+            if target != '.':
+                cmd.append (target)
+                
+            for file in files:
+                if rev is not None:
+                    file += "@%s" % (rev)
+                cmd.append (file)
+        else:
+            cmd.append (target)
+
+        command = Command (cmd, cwd, env = {'LC_ALL' : 'C'})
+        self._run_command (command, BLAME)
+
     def get_modules (self):
         # Two 'standard' repository layouts
         # repo/trunk repo/branches

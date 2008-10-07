@@ -105,6 +105,15 @@ class CVSTest (Test):
         except:
             print "CVS diff: FAILED"
 
+    def blame (self):
+        try:
+            self.repo.blame ('/tmp/poppler/ChangeLog', rev = '1.2')
+            self.repo.blame ('/tmp/poppler/', files = ['autogen.sh'])
+            self.repo.blame ('/tmp/poppler/', rev = '1.1', files = ['README', 'README-XPDF'])
+            print "CVS blame: PASSED"
+        except:
+            print "CVS blame: FAILED"
+
     def get_last_revision (self):
         try:
             rev = self.repo.get_last_revision ('/tmp/poppler/ChangeLog')

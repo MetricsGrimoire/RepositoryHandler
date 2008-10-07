@@ -59,7 +59,6 @@ class GitTest (Test):
             self.repo.log ('/tmp/pciutils/', files = ['ChangeLog'])
         except:
             print "Git log: FAILED"
-            raise
             return
 
         if len (self.log_data) <= 0:
@@ -71,6 +70,25 @@ class GitTest (Test):
     def diff (self):
         # TODO
         pass
+
+    def blame (self):
+        def log_cb (data, user_data = None):
+            self.blame_data += data
+
+        self.repo.add_watch (BLAME, log_cb)
+
+        try:
+            self.blame_data = ""
+            self.repo.blame ('/tmp/pciutils/', files = ['ChangeLog'])
+        except:
+            print "Git blame: FAILED"
+            return
+
+        if len (self.blame_data) <= 0:
+            print "Git blame: FAILED"
+            return
+
+        print "Git blame: PASSED"
 
     def get_modules (self):
         pass

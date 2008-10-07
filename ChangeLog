@@ -1,5 +1,21 @@
 2008-10-07  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
 
+	* repositoryhandler/backends/__init__.py:
+	* repositoryhandler/backends/watchers.py:
+	* repositoryhandler/backends/bzr.py:
+	* repositoryhandler/backends/cvs.py:
+	* repositoryhandler/backends/git.py:
+	* repositoryhandler/backends/svn.py:
+	* tests/__init__.py:
+	* tests/cvs.py:
+	* tests/git.py:
+	* tests/svn.py:
+
+	Add blame command support. Based on patch by Miguel Angel Tinte
+	Garcia.
+	
+2008-10-07  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
+
 	* repositoryhandler/backends/git.py:
 
 	More detailed git log command.

@@ -171,6 +171,32 @@ class CVSRepository (Repository):
         command = Command (cmd, cwd)
         self._run_command (command, DIFF)
 
+    def blame (self, uri, rev = None, files = None):
+        # In cvs rev already includes the branch info
+        # so no need for a branch parameter
+        self._check_srcdir (uri)
+
+        cmd = ['cvs', '-z3', '-q', '-d', self.uri, 'annotate']
+
+        if rev is not None:
+            cmd.extend (['-r', rev])
+
+        if os.path.isfile (uri):
+            directory = os.path.dirname (uri)
+            target = os.path.basename (uri)
+        else:
+            directory = uri
+            target = '.'
+
+        if files is not None:
+            for file in files:
+                cmd.append (file)
+        else:
+            cmd.append (target)
+
+        command = Command (cmd, directory)
+        self._run_command (command, BLAME)
+
     def get_modules (self):
         #Not supported by CVS
         return []
