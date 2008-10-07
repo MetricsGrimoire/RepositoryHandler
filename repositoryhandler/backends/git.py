@@ -176,7 +176,7 @@ class GitRepository (Repository):
         else:
             cwd = os.getcwd ()
         
-        cmd = ['git', 'log', '--all', '--pretty=fuller', '-r', '--name-status', '-M', '-C']
+        cmd = ['git', 'log', '--all', '--topo-order', '--pretty=fuller', '--parents', '--name-status', '-M', '-C', '--decorate', 'origin']
 
         if rev is not None:
             cmd.append (rev)

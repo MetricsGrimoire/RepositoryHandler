@@ -1,3 +1,9 @@
+2008-10-07  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
+
+	* repositoryhandler/backends/git.py:
+
+	More detailed git log command.
+	
 2008-09-30  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
 
 	* repositoryhandler/Command.py:
