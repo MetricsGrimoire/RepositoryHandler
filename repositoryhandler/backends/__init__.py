@@ -119,14 +119,14 @@ class Repository:
                 continue
             cb (data, user_data)
 
-    def _run_command (self, command, type):
+    def _run_command (self, command, type, input = None):
         def callback (data):
             self.__run_callbacks (type, data)
 
         if DEBUG:
             print command.cmd
             
-        command.run (callback)
+        command.run (input, callback)
 
 _backends = {}
 def register_backend (backend_name, backend_class):

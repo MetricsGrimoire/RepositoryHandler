@@ -1,3 +1,15 @@
+2008-10-13  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
+
+	* repositoryhandler/Command.py:
+
+	Updated from misc
+
+	* repositoryhandler/backends/__init__.py:
+	* repositoryhandler/backends/svn.py:
+
+	Correctly handle ssl certificate svn error messages providing the
+	required input to the svn command.
+	
 2008-10-07  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
 
 	* repositoryhandler/backends/__init__.py:

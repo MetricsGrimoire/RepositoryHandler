@@ -18,11 +18,24 @@
 
 import os
 
-from repositoryhandler.Command import Command, CommandError
+from repositoryhandler.Command import Command, CommandError, CommandRunningError
 from repositoryhandler.backends import (Repository, RepositoryInvalidWorkingCopy,
                                         RepositoryInvalidBranch, register_backend)
 from repositoryhandler.backends.watchers import *
 
+SSL_CERTIFICATE_QUESTION = "(R)eject, accept (t)emporarily or accept (p)ermanently?"
+
+def run_command_sync (command):
+    try:
+        return command.run_sync ()
+    except CommandRunningError, e:
+        # Read error message
+        question = e.error.split ('\n')[-1]
+        if question.strip () == SSL_CERTIFICATE_QUESTION:
+            return command.run_sync ('p\n')
+
+    return None
+    
 def get_info (uri):
     if os.path.isdir (uri):
         path = uri
@@ -33,7 +46,7 @@ def get_info (uri):
     cmd = ['svn', 'info', uri]
 
     command = Command (cmd, path, env = {'LC_ALL' : 'C'})
-    out = command.run_sync ('p\n')
+    out = run_command_sync (command)
 
     retval = {}
     for line in out.splitlines ():
@@ -57,7 +70,7 @@ def list_files (uri):
     cmd = ['svn', 'ls', uri]
 
     command = Command (cmd, path, env = {'LC_ALL' : 'C'})
-    out = command.run_sync ()
+    out = run_command_sync (command)
 
     retval = []
     for line in out.splitlines ():
@@ -88,10 +101,20 @@ class SVNRepository (Repository):
             info = get_info (uri)
             root = info['repository root']
         except:
+            raise
             root = uri
             
         Repository.__init__ (self, root, 'svn')
 
+    def _run_command (self, command, type, input = None):
+        try:
+            Repository._run_command (self, command, type, input)
+        except CommandRunningError, e:
+            # Read error message
+            question = e.error.split ('\n')[-1]
+            if question.strip () == SSL_CERTIFICATE_QUESTION:
+                Repository._run_command (command, type, 'p\n')
+        
     def _check_uri (self, uri):
         def is_local (uri):
             import re
