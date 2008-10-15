@@ -248,17 +248,8 @@ class SVNRepository (Repository):
             cwd = uri
             target = '.'
         else:
+            target = uri
             cwd = os.getcwd ()
-
-        if uri.startswith (self.uri):
-            # Remote URI
-            if uri.find ('trunk') >= 0 or uri.find ('branches') >= 0:
-                target = uri
-            else:
-                if branch is not None:
-                    target = os.path.join (uri, 'branches', branch)
-                else:
-                    target = os.path.join (uri, 'trunk')
 
         cmd = ['svn', 'diff']
 

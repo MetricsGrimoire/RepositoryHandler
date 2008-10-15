@@ -1,3 +1,10 @@
+2008-10-14  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
+
+	* repositoryhandler/backends/svn.py:
+
+	Remove the crappy stuff about branches in svn diff when using a
+	remote uri.
+	
 2008-10-13  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
 
 	* repositoryhandler/Command.py:
