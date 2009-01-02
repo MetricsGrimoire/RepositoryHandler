@@ -204,7 +204,7 @@ class Command:
         if ret == 0 or (self.cmd[0] == 'cvs' and self.cmd[5] == 'diff'):
             return
         
-        raise CommandError ('Error running %s' % self.cmd, p.returncode)
+        raise CommandError ('Error running %s' % self.cmd, ret)
 
 if __name__ == '__main__':
     # Valid command without cwd

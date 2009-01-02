@@ -1,3 +1,9 @@
+2009-01-02  Carlos Garcia Campos  <carlosgc@gsyc.es>
+
+	* repositoryhandler/Command.py:
+
+	Updated from misc.
+	
 2008-10-14  Carlos Garcia Campos  <carlosgc@gsyc.escet.urjc.es>
 
 	* repositoryhandler/backends/svn.py:
