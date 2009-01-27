@@ -1,3 +1,10 @@
+2009-01-27  Carlos Garcia Campos  <carlosgc@gsyc.es>
+
+	* repositoryhandler/backends/git.py:
+
+	Do not append uri to log command when it's a directory, since we
+	are using it as cwd.
+	
 2009-01-02  Carlos Garcia Campos  <carlosgc@gsyc.es>
 
 	* repositoryhandler/Command.py:

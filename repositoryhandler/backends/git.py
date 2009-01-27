@@ -184,7 +184,7 @@ class GitRepository (Repository):
         if files is not None:
             for file in files:
                 cmd.append (file)
-        else:
+        elif cwd != uri:
             cmd.append (uri)
 
         command = Command (cmd, cwd, env = {'PAGER' : ''})
