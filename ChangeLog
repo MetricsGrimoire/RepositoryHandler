@@ -1,3 +1,12 @@
+2009-02-02  Carlos Garcia Campos  <carlosgc@gsyc.es>
+
+	* configure.in:
+	* AUTHORS:
+	* NEWS:
+	* README:
+
+	Update for release 0.2
+	
 2009-01-27  Carlos Garcia Campos  <carlosgc@gsyc.es>
 
 	* repositoryhandler/backends/git.py:

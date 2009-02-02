@@ -7,12 +7,12 @@ Supported repository types
  * CVS
  * SVN
  * GIT
+ * BZR (Preliminary support)
  * Tarball
 
 Optional:
 
  * ARCH (not implemented yet)
- * BZR (not implemented yet)
  * DARCS (not implemented yet)
 
 Dependencies

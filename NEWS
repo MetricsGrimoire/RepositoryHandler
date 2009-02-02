@@ -1,4 +1,31 @@
 ======================
+Repository Handler 0.2
+======================
+
+New features and API changes:
+
+    * Add blame support. (Miguel Angel Tinte, Carlos Garcia Campos)
+    * The git log output is even more detailed now including
+      information about tags and branchces (Carlos Garcia Campos)
+    * Add rlog method (only implemented by cvs and svn backends) to
+      get the log directly from the repository. (Carlos Garcia Campos)
+    * Implement get_last_revision method in cvs backend (Carlos Garcia
+      Campos)
+    * Add a debug option to be able to know what commands are being
+      executed (Carlos Garcia Campos)
+    * Include tags information in cvs log output (Carlos Garcia Campos)
+    * Branch parameter has been removed from log method (Carlos Garcia Campos)
+    * Add an option to force update in svn backend (Santiago Dueñas)
+    * Initial Bazaar support (Carlos Garcia Campos)
+
+Bug fixes:
+
+    * Fix ssl certificate handling in svn backend (Carlos Garcia Campos)
+    * Fix checkout of deleted files in svn backend (Luis Cañas)
+    * Several fixes in commands execution and communication. (Carlos
+      Garcia Campos)
+
+======================
 Repository Handler 0.1
 ======================
 
