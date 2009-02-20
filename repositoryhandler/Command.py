@@ -74,8 +74,17 @@ class Command:
         if stdin is not None:
             p.stdin.flush ()
             write_set.append (p.stdin)
-        
-        out_data = err_data = ""
+
+        if out_data_cb is None:
+            out_data = ""
+        else:
+            out_data = None
+
+        if err_data_cb is None:
+            err_data = ""
+        else:
+            err_data = None
+
         input_offset = 0
         try:
             while read_set or write_set:
@@ -103,9 +112,10 @@ class Command:
                     if out_chunk == "":
                         p.stdout.close ()
                         read_set.remove (p.stdout)
-                    out_data += out_chunk
 
-                    if out_data_cb is not None:
+                    if out_data_cb is None:
+                        out_data += out_chunk
+                    else:
                         out_data_cb[0] (out_chunk, out_data_cb[1])
                     
                 if p.stderr in rlist:
@@ -114,9 +124,10 @@ class Command:
                     if err_chunk == "":
                         p.stderr.close ()
                         read_set.remove (p.stderr)
-                    err_data += err_chunk
 
-                    if err_data_cb is not None:
+                    if err_data_cb is None:
+                        err_data += err_chunk
+                    else:
                         err_data_cb[0] (err_chunk, err_data_cb[1])
                     
         except KeyboardInterrupt:

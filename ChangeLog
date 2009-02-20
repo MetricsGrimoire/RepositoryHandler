@@ -1,3 +1,11 @@
+2009-02-20  Carlos Garcia Campos  <carlosgc@gsyc.es>
+
+	* repositoryhandler/Command.py:
+
+	Update from misc. Standard and error output are not stored in
+	variables when using callbacks, saving a lot of memory when
+	running commands with very long outputs such as log or diff.
+	
 2009-02-02  Carlos Garcia Campos  <carlosgc@gsyc.es>
 
 	* configure.in:
