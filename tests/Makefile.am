@@ -14,11 +14,11 @@ EXTRA_DIST = $(tests)			\
 	     run_thread_test.py.in
 
 run_test.py: run_test.py.in
-	sed -e s!\@testdir\@!$(top_srcdir)/repositoryhandler! < $< > $@
+	sed -e s!\@testdir\@!$(top_srcdir)! < $< > $@
 	chmod a+x $@
 
 run_thread_test.py: run_thread_test.py.in
-	sed -e s!\@testdir\@!$(top_srcdir)/repositoryhandler! < $< > $@
+	sed -e s!\@testdir\@!$(top_srcdir)! < $< > $@
 	chmod a+x $@
 
 CLEANFILES = run_test.py		\
