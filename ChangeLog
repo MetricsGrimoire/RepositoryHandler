@@ -1,3 +1,9 @@
+2009-02-21  Carlos Garcia Campos  <carlosgc@gsyc.es>
+
+	* repositoryhandler/Command.py:
+
+	Updated from misc. It fixes an error in previous commit.
+	
 2009-02-20  Carlos Garcia Campos  <carlosgc@gsyc.es>
 
 	* repositoryhandler/Command.py:

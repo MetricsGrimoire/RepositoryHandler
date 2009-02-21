@@ -97,8 +97,8 @@ class Command:
                     raise
 
                 if rlist == wlist == []:
-                    if err_data != "":
-                        raise CommandRunningError ("Error during executioin of %s" % (str (self.cmd)), err_data)
+                    if err_data:
+                        raise CommandRunningError ("Error during execution of %s" % (str (self.cmd)), err_data)
                     
                 if p.stdin in wlist:
                     bytes_written = self._write (p.stdin.fileno (), buffer (stdin, input_offset, 512))
