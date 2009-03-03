@@ -41,6 +41,21 @@ class CVSRepository (Repository):
 
     def __init__ (self, uri):
         Repository.__init__ (self, uri, 'cvs')
+
+    def get_uri_for_path (self, path):
+        self._check_srcdir (path)
+
+        if os.path.isfile (path):
+            path = os.path.dirname (path)
+
+        repository = os.path.join (path, 'CVS', 'Repository')
+        
+        try:
+            rpath = open (repository, 'r').read ().strip ()
+        except IOError:
+            raise RepositoryInvalidWorkingCopy ('"%s" does not appear to be a CVS working copy' % path)
+
+        return os.path.join (self.uri, rpath)
         
     def _check_srcdir (self, srcuri):
         # srcuri can be a module, directory or file

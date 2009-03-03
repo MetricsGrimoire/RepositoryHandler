@@ -49,6 +49,10 @@ class Repository:
 
     def get_uri (self):
         return self.uri
+
+    def get_uri_for_path (self):
+        '''Returns the repository URI corresponding to the given local path'''
+        return self.uri
         
     def get_type (self):
         return self.type

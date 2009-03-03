@@ -101,10 +101,25 @@ class SVNRepository (Repository):
             info = get_info (uri)
             root = info['repository root']
         except:
-            raise
             root = uri
             
         Repository.__init__ (self, root, 'svn')
+
+    def get_uri_for_path (self, path):
+        self._check_uri (path)
+        
+        if os.path.isfile (path):
+            path = os.path.dirname (path)
+
+        if not os.path.isdir (path):
+            return self.uri
+        
+        try:
+            info = get_info (path)
+        except:
+            return self.uri
+
+        return info['url']
 
     def _run_command (self, command, type, input = None):
         try:
