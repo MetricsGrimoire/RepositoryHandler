@@ -1,8 +1,14 @@
+2009-03-04  Carlos Garcia Campos  <carlosgc@gsyc.es>
+
+	* repositoryhandler/Command.py:
+
+	Updated from misc. Several error handling improvements.
+	
 2009-03-03  Carlos Garcia Campos  <carlosgc@gsyc.es>
 
 	* repositoryhandler/backends/__init__.py:
 
-	Add mimssing parameter to get_uri_for_path() in the base class.
+	Add missing parameter to get_uri_for_path() in the base class.
 	
 2009-03-02  Carlos Garcia Campos  <carlosgc@gsyc.es>
 
