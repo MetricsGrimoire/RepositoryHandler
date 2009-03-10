@@ -1,3 +1,10 @@
+2009-03-10  Carlos Garcia Campos  <carlosgc@gsyc.es>
+
+	* repositoryhandler/backends/svn.py:
+
+	Run svn checkout and update with the C locale too for the error
+	messages.
+	
 2009-03-04  Carlos Garcia Campos  <carlosgc@gsyc.es>
 
 	* repositoryhandler/Command.py:

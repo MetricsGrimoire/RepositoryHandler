@@ -199,7 +199,7 @@ class SVNRepository (Repository):
         else:
             cmd.append (module)
 
-        command = Command (cmd, rootdir)
+        command = Command (cmd, rootdir, env = {'LC_ALL' : 'C'})
         self._run_command (command, CHECKOUT)
 
     def update (self, uri, rev = None, force = False):
@@ -212,7 +212,7 @@ class SVNRepository (Repository):
             cmd.extend (['-r', rev])
         
         cmd.append (uri)
-        command = Command (cmd)
+        command = Command (cmd, env = {'LC_ALL' : 'C'})
         self._run_command (command, UPDATE)
 
     def log (self, uri, rev = None, files = None):
