@@ -241,7 +241,7 @@ class GitRepository (Repository):
     def get_last_revision (self, uri):
         self._check_uri (uri)
 
-        cmd = ['git-rev-list', 'HEAD^..HEAD']
+        cmd = ['git', 'rev-list', 'HEAD^..HEAD']
 
         command = Command (cmd, uri, env = {'PAGER' : ''})
         try:

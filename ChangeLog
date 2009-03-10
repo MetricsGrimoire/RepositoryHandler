@@ -1,6 +1,13 @@
 2009-03-10  Carlos Garcia Campos  <carlosgc@gsyc.es>
 
 	* repositoryhandler/backends/git.py:
+
+	Do not use git- commands since it's deprecated and even not
+	available in recent git versions.
+	
+2009-03-10  Carlos Garcia Campos  <carlosgc@gsyc.es>
+
+	* repositoryhandler/backends/git.py:
 	* tests/git.py:
 
 	Implement the special case module = '.' in the git backend to be
