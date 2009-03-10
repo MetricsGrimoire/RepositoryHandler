@@ -123,7 +123,10 @@ class GitRepository (Repository):
         elif newdir == '.':
             srcdir = rootdir
         else:
-            srcdir = os.path.join (rootdir, module)
+            if module == '.':
+                srcdir = os.path.join (rootdir, os.path.basename (self.uri.rstrip ('/')))
+            else:
+                srcdir = os.path.join (rootdir, module)
         if os.path.exists (srcdir):
             try:
                 self.update (srcdir, rev)
@@ -133,12 +136,18 @@ class GitRepository (Repository):
                 # continue with the checkout
                 pass
 
-        uri = os.path.join (self.uri, module)
+        # module == '.' is a special case to download the whole repository
+        if module == '.':
+            uri = self.uri
+        else:
+            uri = os.path.join (self.uri, module)
 
         cmd = ['git', 'clone', uri]
 
         if newdir is not None:
             cmd.append (newdir)
+        elif module == '.':
+            cmd.append (os.path.basename (uri.rstrip ('/')))
         else:
             cmd.append (module)
 

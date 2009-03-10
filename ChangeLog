@@ -1,5 +1,13 @@
 2009-03-10  Carlos Garcia Campos  <carlosgc@gsyc.es>
 
+	* repositoryhandler/backends/git.py:
+	* tests/git.py:
+
+	Implement the special case module = '.' in the git backend to be
+	able to clone the whole repository.
+	
+2009-03-10  Carlos Garcia Campos  <carlosgc@gsyc.es>
+
 	* repositoryhandler/backends/svn.py:
 
 	Run svn checkout and update with the C locale too for the error

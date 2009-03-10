@@ -17,6 +17,13 @@ class GitTest (Test):
         if not os.path.exists ('/tmp/pciutils/.git'):
             print "Git checkout: FAILED"
             return
+
+        # Test module = '.'
+        repo2 = create_repository ('git', 'git://anongit.freedesktop.org/libspectre')
+        repo2.checkout ('.', '/tmp')
+        if not os.path.exists ('/tmp/libspectre/.git'):
+            print "Git checkout (module = '.'): FAILED"
+            return
         
         try:
             repo2 = create_repository_from_path ('/tmp/cpufrequtils')
@@ -107,6 +114,7 @@ class GitTest (Test):
     def clean (self):
         remove_directory ('/tmp/cpufrequtils')
         remove_directory ('/tmp/pciutils')
+        remove_directory ('/tmp/libspectre')
 
 
 register_test ('git', GitTest)
