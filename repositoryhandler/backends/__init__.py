@@ -23,6 +23,12 @@ DEBUG = False
 
 __all__ = [
         'Repository',
+        'RepositoryUnknownError',
+        'RepositoryInvalidWorkingCopy',
+        'RepositoryInvalidBranch',
+        'InvalidWatch',
+        'RepositoryCommandError',
+        'RepositoryCommandRunningError',
         'create_repository',
         'register_backend', 
         'create_repository_from_path'
