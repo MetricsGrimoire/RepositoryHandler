@@ -19,7 +19,8 @@
 import os
 
 from repositoryhandler.Command import Command
-from repositoryhandler.backends import Repository, RepositoryInvalidWorkingCopy, register_backend
+from repositoryhandler.backends import (Repository, RepositoryInvalidWorkingCopy,
+                                        RepositoryCommandError, register_backend)
 from repositoryhandler.backends.watchers import *
 
 def get_repository_from_path (path):
@@ -184,7 +185,21 @@ class CVSRepository (Repository):
             cmd.append ('.')
 
         command = Command (cmd, cwd)
-        self._run_command (command, DIFF)
+        # If cvs is successful, it returns a successful status; if there is an error,
+        # it prints an error message and returns a failure status. One
+        # exception to this is the cvs diff command.  It will return a successful status
+        # if it found no differences, or a failure status if there were differences or if
+        # there was an error.  Because this behavior provides no good way to detect errors,
+        # in the future it is possible that cvs  diff  will be changed to behave like
+        # the other cvs commands.
+        try:
+            self._run_command (command, DIFF)
+        except RepositoryCommandError, e:
+            if e.returncode != 0 and not e.error:
+                pass
+            else:
+                raise e
+            
 
     def blame (self, uri, rev = None, files = None):
         # In cvs rev already includes the branch info

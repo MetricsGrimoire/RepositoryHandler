@@ -1,5 +1,13 @@
 2009-03-11  Carlos Garcia Campos  <carlosgc@gsyc.es>
 
+	* repositoryhandler/Command.py:
+	* repositoryhandler/backends/cvs.py:
+
+	Update Command from misc and move code specific of the cvs diff
+	exception from Command to the CVS backend.
+	
+2009-03-11  Carlos Garcia Campos  <carlosgc@gsyc.es>
+
 	* configure.in:
 	* Makefile.am:
 	* repositoryhandler.pc.in:
