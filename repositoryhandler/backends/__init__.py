@@ -17,6 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 from repositoryhandler.backends.watchers import *
+from repositoryhandler.Command import CommandError, CommandRunningError
 
 DEBUG = False
 
@@ -38,6 +39,12 @@ class RepositoryInvalidBranch (Exception):
     
 class InvalidWatch (Exception):
     '''Invalid watch type'''
+
+class RepositoryCommandError (CommandError):
+    '''Error running a command'''
+
+class RepositoryCommandRunningError (CommandRunningError):
+    '''Error running a command that is still running'''
 
 class Repository:
     '''Abstract class representing a file repository'''
@@ -129,8 +136,13 @@ class Repository:
 
         if DEBUG:
             print command.cmd
-            
-        command.run (input, callback)
+
+        try:
+            command.run (input, callback)
+        except CommandError, e:
+            raise RepositoryCommandError (e.cmd, e.returncode, e.error)
+        except CommandRunningError, e:
+            raise RepositoryCommandRunningError (e.cmd, e.error)
 
 _backends = {}
 def register_backend (backend_name, backend_class):
