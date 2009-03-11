@@ -10,6 +10,7 @@ dnl TODO: backends deps
 
 AC_CONFIG_FILES([
 Makefile
+repositoryhandler.pc
 repositoryhandler/Makefile
 repositoryhandler/backends/Makefile
 tests/Makefile

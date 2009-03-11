@@ -2,4 +2,10 @@ SUBDIRS = repositoryhandler tests
 
 EXTRA_DIST = 	\
 	README	\
-	COPYING
+	COPYING	\
+	repositoryhandler.pc.in
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = repositoryhandler.pc
+
+

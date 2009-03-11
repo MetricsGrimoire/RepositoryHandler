@@ -1,5 +1,13 @@
 2009-03-11  Carlos Garcia Campos  <carlosgc@gsyc.es>
 
+	* configure.in:
+	* Makefile.am:
+	* repositoryhandler.pc.in:
+
+	Add pkg-config file.
+	
+2009-03-11  Carlos Garcia Campos  <carlosgc@gsyc.es>
+
 	* repositoryhandler/backends/__init__.py:
 
 	Add exceptions to __all__ list.
