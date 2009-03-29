@@ -1,4 +1,34 @@
 ======================
+Repository Handler 0.3
+======================
+
+New features and API changes:
+
+    * Add pkg-config file. (Carlos Garcia Campos)
+    * A new method has been added to be able to get the repository URI
+      corresponding to a local path where the repository was checked
+      out. (Carlos Garcia Campos)
+
+Bug fixes:
+
+    * Do not use git- commands, they are not available in recent git
+      versions. (Carlos Garcia Campos)
+    * Implement the special case module = '.' in the git backend to be
+      able to clone the whole repository. (Carlos Garcia Campos)
+    * Improve error handling when running commands providing
+      the exceptions RepositoryCommandError and
+      RepositoryCommandRunningError that wrap the Command.py
+      exceptions. (Carlos Garcia Campos)
+    * Several fixes and improvements when running commands included in
+      the Command.py module. One important improvement is that
+      standard and error output are not stored in memory anymore when
+      the run() function is called with callbacks to handle such
+      output, since it caused memory problems with commands that
+      produces a lot of output like the log command. (Carlos Garcia
+      Campos)
+      
+      
+======================
 Repository Handler 0.2
 ======================
 
