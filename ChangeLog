@@ -1,3 +1,19 @@
+2009-03-31  Carlos Garcia Campos  <carlosgc@gsyc.es>
+
+	* repositoryhandler/backends/__init__.py:
+	* repositoryhandler/backends/watchers.py:
+	* repositoryhandler/backends/cvs.py:
+	* repositoryhandler/backends/git.py:
+	* repositoryhandler/backends/svn.py:
+	* tests/__init__.py:
+	* tests/cvs.py:
+	* tests/git.py:
+	* tests/svn.py:
+
+	Add cat method to the API to be able to output the content of any
+	uri for any given revision. Implement the cat method in cvs, svn
+	and git backends adding tests for all of them too.
+	
 2009-03-29  Carlos Garcia Campos  <carlosgc@gsyc.es>
 
 	* configure.in:

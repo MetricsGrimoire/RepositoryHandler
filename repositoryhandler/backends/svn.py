@@ -215,6 +215,26 @@ class SVNRepository (Repository):
         command = Command (cmd, env = {'LC_ALL' : 'C'})
         self._run_command (command, UPDATE)
 
+    def cat (self, uri, rev = None):
+        self._check_uri (uri)
+
+        if os.path.exists (uri):
+            cwd = os.path.dirname (uri)
+            target = os.path.basename (uri)
+        else:
+            cwd = os.getcwd ()
+            target = uri
+
+        cmd = ['svn', 'cat']
+
+        if rev is not None:
+            target += '@%s' % (rev)
+
+        cmd.append (target)
+
+        command = Command (cmd, cwd, env = {'LC_ALL' : 'C'})
+        self._run_command (command, CAT)
+
     def log (self, uri, rev = None, files = None):
         self._check_uri (uri)
 

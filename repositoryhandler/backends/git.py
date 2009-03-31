@@ -174,6 +174,28 @@ class GitRepository (Repository):
         command = Command (cmd, directory)
         self._run_command (command, UPDATE)
 
+    def cat (self, uri, rev = None):
+        self._check_uri (uri)
+
+        cmd = ['git', 'show']
+
+        directory = os.path.dirname (uri)
+
+        while not os.path.isdir (os.path.join (directory, ".git")):
+            directory = os.path.dirname (directory)
+
+        target = uri[len (directory):].strip ("/")
+            
+        if rev is not None:
+            target = "%s:%s" % (rev, target)
+        else:
+            target = ":%s" % (target)
+
+        cmd.append (target)
+            
+        command = Command (cmd, directory, env = {'PAGER' : ''})
+        self._run_command (command, CAT)
+        
     def log (self, uri, rev = None, files = None):
         self._check_uri (uri)
 

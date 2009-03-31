@@ -16,6 +16,9 @@ class Test:
     def update (self):
         pass
 
+    def cat (self):
+        pass
+
     def log (self):
         pass
 
@@ -40,6 +43,7 @@ class Test:
     def run (self):
         self.checkout ()
         self.update ()
+        self.cat ()
         self.log ()
         self.diff ()
         self.blame ()

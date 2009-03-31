@@ -61,6 +61,23 @@ class CVSTest (Test):
         else:
             print "CVS update: FAILED"
 
+    def cat (self):
+        def cat_output (line, user_data):
+            user_data[0] += 1
+
+        n_lines = [0]
+        self.repo.add_watch (CAT, cat_output, n_lines)
+        try:
+            self.repo.cat ('/tmp/poppler/ChangeLog', rev = '1.5')
+        except:
+            print "CVS cat: FAILED"
+            return
+
+        if n_lines[0] == 57:
+            print "CVS cat: PASSED"
+        else:
+            print "CVS cat: FAILED"
+            
     def log (self):
         # log
         self.log_data = ""

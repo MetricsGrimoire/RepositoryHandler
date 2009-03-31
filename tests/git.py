@@ -51,9 +51,26 @@ class GitTest (Test):
             self.repo.update ('/tmp/pciutils/', rev = 'master')
         except:
             print "Git update: FAILED"
-            raise
+            return
         
         print "Git update: PASSED"
+
+    def cat (self):
+        def cat_output (line, user_data):
+            user_data[0] += 1
+
+        n_lines = [0]
+        self.repo.add_watch (CAT, cat_output, n_lines)
+        try:
+            self.repo.cat ("/tmp/cpufrequtils/lib/cpufreq.c", rev = "e982c5fc03f594d4c0384c4a35d761f64acb9273")
+        except:
+            print "Git cat: FAILED"
+            return
+
+        if n_lines[0] == 234:
+            print "Git cat: PASSED"
+        else:
+            print "Git cat: FAILED"
 
     def log (self):
         def log_cb (data, user_data = None):

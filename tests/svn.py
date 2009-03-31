@@ -71,6 +71,37 @@ class SVNTest (Test):
         
         print "SVN update: PASSED"
 
+    def cat (self):
+        def cat_output (line, user_data):
+            user_data[0] += 1
+
+        n_lines = [0]
+        self.repo.add_watch (CAT, cat_output, n_lines)
+        # cat a file using a local path
+        try:
+            self.repo.cat ('/tmp/gnome-common/ChangeLog')
+        except:
+            print "SVN cat: FAILED"
+            return
+
+        if n_lines[0] != 795:
+            print "SVN cat: FAILED"
+            return
+
+        n_lines[0] = 0
+        
+        # cat a file using a remote path
+        try:
+            self.repo.cat ("http://svn.gnome.org/svn/gnome-common/trunk/ChangeLog", rev = "3900")
+        except:
+            print "SVN cat: FAILED"
+            return
+
+        if n_lines[0] != 795:
+            print "SVN cat: FAILED"
+        else:
+            print "SVN cat: PASSED"
+            
     def log (self):
         # log (current branch)
 

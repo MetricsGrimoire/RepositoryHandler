@@ -78,6 +78,10 @@ class Repository:
         '''Update a working copy uri'''
         raise NotImplementedError
 
+    def cat (self, uri, rev = None):
+        '''Output the content of specified uri'''
+        raise NotImplementedError
+
     def log (self, uri, rev = None, files = None):
         '''Return log for working copy uri'''
         raise NotImplementedError

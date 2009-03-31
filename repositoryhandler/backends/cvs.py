@@ -43,18 +43,23 @@ class CVSRepository (Repository):
     def __init__ (self, uri):
         Repository.__init__ (self, uri, 'cvs')
 
-    def get_uri_for_path (self, path):
-        self._check_srcdir (path)
-
+    def __get_repository_for_path (self, path):
         if os.path.isfile (path):
             path = os.path.dirname (path)
 
         repository = os.path.join (path, 'CVS', 'Repository')
-        
+
         try:
             rpath = open (repository, 'r').read ().strip ()
         except IOError:
             raise RepositoryInvalidWorkingCopy ('"%s" does not appear to be a CVS working copy' % path)
+
+        return rpath
+        
+    def get_uri_for_path (self, path):
+        self._check_srcdir (path)
+
+        rpath = self.__get_repository_for_path (path)
 
         return os.path.join (self.uri, rpath)
         
@@ -124,8 +129,28 @@ class CVSRepository (Repository):
             directory = uri
             cmd.append ('.')
             
-        command = Command (cmd,directory)
+        command = Command (cmd, directory)
         self._run_command (command, UPDATE)
+
+    def cat (self, uri, rev = None):
+        self._check_srcdir (uri)
+
+        rpath = self.__get_repository_for_path (uri)
+        
+        cmd = ['cvs', '-z3', '-q', '-d', self.uri, 'checkout', '-p']
+
+        if rev is not None:
+            cmd.extend (['-r', rev])
+
+        if os.path.isfile (uri):
+            directory = os.path.dirname (uri)
+            cmd.append (os.path.join (rpath, os.path.basename (uri)))
+        else:
+            directory = uri
+            cmd.append (rpath)
+
+        command = Command (cmd, directory)
+        self._run_command (command, CAT)
 
     def log (self, uri, rev = None, files = None):
         self._check_srcdir (uri)
