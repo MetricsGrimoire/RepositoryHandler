@@ -1,3 +1,9 @@
+2009-04-28  Carlos Garcia Campos  <carlosgc@gsyc.es>
+
+	* repositoryhandler/backends/git.py:
+
+	Make get_repository_from_path() work even for deleted paths.
+	
 2009-03-31  Carlos Garcia Campos  <carlosgc@gsyc.es>
 
 	* repositoryhandler/backends/__init__.py:

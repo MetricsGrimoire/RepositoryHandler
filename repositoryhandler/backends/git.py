@@ -50,12 +50,15 @@ def get_config (path, option = None):
     return retval
 
 def get_repository_from_path (path):
-    # Just in case path is a file 
-    if os.path.isfile (path):
-        path = os.path.dirname (path)
+    dir = path
+    while not os.path.isdir (os.path.join (dir, ".git")) and dir != "/":
+        dir = os.path.dirname (dir)
 
+    if dir == "/":
+        raise RepositoryInvalidWorkingCopy ('"%s" does not appear to be a Git working copy' % path)
+    
     try:
-        uri = get_config (path, 'remote.origin.url')
+        uri = get_config (dir, 'remote.origin.url')
     except CommandError:
         raise RepositoryInvalidWorkingCopy ('"%s" does not appear to be a Git working copy' % path)
 
