@@ -68,12 +68,12 @@ class CVSTest (Test):
         n_lines = [0]
         self.repo.add_watch (CAT, cat_output, n_lines)
         try:
-            self.repo.cat ('/tmp/poppler/ChangeLog', rev = '1.5')
+            self.repo.cat ('/tmp/poppler/goo/gmem.c', rev = '1.2')
         except:
             print "CVS cat: FAILED"
             return
 
-        if n_lines[0] == 57:
+        if n_lines[0] == 204:
             print "CVS cat: PASSED"
         else:
             print "CVS cat: FAILED"

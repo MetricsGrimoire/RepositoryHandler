@@ -25,7 +25,7 @@ from repositoryhandler.backends.watchers import *
 
 def get_repository_from_path (path):
     # Just in case path is a file
-    if os.path.isfile(path):
+    if not os.path.isdir (path):
         path = os.path.dirname (path)
         
     cvsroot = os.path.join (path, 'CVS', 'Root')
@@ -44,7 +44,7 @@ class CVSRepository (Repository):
         Repository.__init__ (self, uri, 'cvs')
 
     def __get_repository_for_path (self, path):
-        if os.path.isfile (path):
+        if not os.path.isdir (path):
             path = os.path.dirname (path)
 
         repository = os.path.join (path, 'CVS', 'Repository')
@@ -142,7 +142,7 @@ class CVSRepository (Repository):
         if rev is not None:
             cmd.extend (['-r', rev])
 
-        if os.path.isfile (uri):
+        if not os.path.isdir (uri):
             directory = os.path.dirname (uri)
             cmd.append (os.path.join (rpath, os.path.basename (uri)))
         else:
