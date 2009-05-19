@@ -12,3 +12,5 @@ install-sh
 missing
 py-compile
 INSTALL
+tests/run_test.py
+tests/run_thread_test.py
