@@ -113,7 +113,7 @@ class CVSRepository (Repository):
                 # continue with the checkout
                 pass
 
-        cmd = ['cvs', '-z3', '-q', '-d', self.uri, 'checkout', '-P']
+        cmd = ['cvs', '-z3', '-q', '-d', self.uri, 'checkout', '-PN']
 
         if rev is not None:
             cmd.extend (['-r', rev])
