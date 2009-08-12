@@ -26,16 +26,18 @@ from repositoryhandler.backends.watchers import *
 SSL_CERTIFICATE_QUESTION = "(R)eject, accept (t)emporarily or accept (p)ermanently?"
 
 def run_command_sync (command):
-    try:
-        return command.run_sync ()
-    except CommandRunningError, e:
+    def error_handler (cmd, error):
         # Read error message
-        question = e.error.split ('\n')[-1]
+        question = error.split ('\n')[-1]
         if question.strip () == SSL_CERTIFICATE_QUESTION:
-            return command.run_sync ('p\n')
+            cmd.input ('p\n')
+            return True
 
-    return None
-    
+        return False
+
+    command.set_error_handler (error_handler)
+    return command.run ()
+
 def get_info (uri):
     if os.path.isdir (uri):
         path = uri

@@ -17,11 +17,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 import os
+import re
 
 from repositoryhandler.Command import Command
 from repositoryhandler.backends import (Repository, RepositoryInvalidWorkingCopy,
                                         RepositoryCommandError, register_backend)
 from repositoryhandler.backends.watchers import *
+
+CVSPASS_ERROR_MESSAGE = "^.*: CVS password file .*\.cvspass does not exist - creating a new file$"
 
 def get_repository_from_path (path):
     # Just in case path is a file
@@ -55,7 +58,15 @@ class CVSRepository (Repository):
             raise RepositoryInvalidWorkingCopy ('"%s" does not appear to be a CVS working copy' % path)
 
         return rpath
-        
+
+    def _run_command (self, command, type, input = None):
+        def error_handler (cmd, error):
+            patt = re.compile (CVSPASS_ERROR_MESSAGE)
+            return patt.match (error) is not None
+
+        command.set_error_handler (error_handler)
+        Repository._run_command (self, command, type, input)
+
     def get_uri_for_path (self, path):
         self._check_srcdir (path)
 
