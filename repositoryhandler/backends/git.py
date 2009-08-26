@@ -259,6 +259,29 @@ class GitRepository (Repository):
         command = Command (cmd, cwd, env = {'PAGER' : ''})
         self._run_command (command, BLAME)
 
+    def ls (self, uri, rev = None):
+        self._check_uri (uri)
+
+        target = None
+        if os.path.isfile (uri):
+            cwd = os.path.dirname (uri)
+            target = os.path.basename (uri)
+        elif os.path.isdir (uri):
+            cwd = uri
+        else:
+            cwd = os.getcwd ()
+
+        if rev is None:
+            rev = 'HEAD'
+
+        cmd = ['git',  'ls-tree', '--name-only', '--full-name', '-r', rev]
+
+        if target is not None:
+            cmd.append (target)
+
+        command = Command (cmd, cwd, env = {'PAGER' : ''})
+        self._run_command (command, LS)
+
     def get_modules (self):
         #Not supported by Git
         return []

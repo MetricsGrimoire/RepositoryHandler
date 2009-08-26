@@ -31,6 +31,9 @@ class Test:
     def blame (self):
         pass
 
+    def ls (self):
+        pass
+
     def get_modules (self):
         pass
 
@@ -47,6 +50,7 @@ class Test:
         self.log ()
         self.diff ()
         self.blame ()
+        self.ls ()
         self.get_modules ()
         self.get_last_revision ()
         self.clean ()

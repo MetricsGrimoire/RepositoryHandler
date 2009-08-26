@@ -342,6 +342,32 @@ class SVNRepository (Repository):
         command = Command (cmd, cwd, env = {'LC_ALL' : 'C'})
         self._run_command (command, BLAME)
 
+    def ls (self, uri, rev = None):
+        self._check_uri (uri)
+
+        if os.path.isfile (uri):
+            cwd = os.path.dirname (uri)
+            target = os.path.basename (uri)
+        elif os.path.isdir (uri):
+            cwd = uri
+            target = '.'
+        else:
+            cwd = os.getcwd ()
+            target = uri
+
+        cmd = ['svn', '-R', 'ls']
+
+        if rev is not None:
+            if target == '.':
+                cmd.extend (['-r', rev])
+            else:
+                target += "@%s" % (rev)
+
+        cmd.append (target)
+
+        command = Command (cmd, cwd, env = {'LC_ALL' : 'C'})
+        self._run_command (command, LS)
+
     def get_modules (self):
         # Two 'standard' repository layouts
         # repo/trunk repo/branches

@@ -263,6 +263,25 @@ class CVSRepository (Repository):
         command = Command (cmd, directory)
         self._run_command (command, BLAME)
 
+    def ls (self, uri, rev = None):
+        self._check_srcdir (uri)
+
+        cmd = ['cvs', '-z3', '-q', '-d', self.uri, 'list', '-R']
+
+        if rev is not None:
+            cmd.extend (['-r', rev])
+
+        if os.path.isfile (uri):
+            directory = os.path.dirname (uri)
+        else:
+            directory = uri
+
+        # cvs doesn't support listing a file
+        cmd.append ('.')
+
+        command = Command (cmd, directory)
+        self._run_command (command, LS)
+
     def get_modules (self):
         #Not supported by CVS
         return []

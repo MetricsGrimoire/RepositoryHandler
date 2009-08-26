@@ -1,10 +1,11 @@
-N_WATCHES = 6
+N_WATCHES = 7
 
 (
     CHECKOUT,
-    UPDATE, 
-    LOG, 
+    UPDATE,
+    LOG,
     DIFF,
     BLAME,
-    CAT
+    CAT,
+    LS
 ) = range (N_WATCHES)

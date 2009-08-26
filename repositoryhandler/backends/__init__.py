@@ -98,6 +98,10 @@ class Repository:
         '''Return blame/annotate for files'''
         raise NotImplementedError
 
+    def ls (self, uri, rev = None):
+        '''List recursively all the files in the given uri'''
+        raise NotImplementedError
+
     def get_modules (self):
         '''Return the list of modules of the repository'''
         raise NotImplementedError
