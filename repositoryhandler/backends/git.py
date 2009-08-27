@@ -232,7 +232,7 @@ class GitRepository (Repository):
         # TODO
         pass
 
-    def blame (self, uri, rev = None, files = None):
+    def blame (self, uri, rev = None, files = None, mc = False):
         self._check_uri (uri)
 
         if os.path.isfile (uri):
@@ -244,6 +244,9 @@ class GitRepository (Repository):
             cwd = os.getcwd ()
 
         cmd = ['git', 'blame', '--root', '-l', '-t', '-f']
+
+        if mc:
+            cmd.extend (['-M', '-C'])
 
         if rev is not None:
             cmd.append (rev)
