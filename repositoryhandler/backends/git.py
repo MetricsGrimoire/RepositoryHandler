@@ -250,11 +250,9 @@ class GitRepository (Repository):
         else:
             cmd.append ('origin/master')
 
-        if files is not None:
-            for file in files:
-                cmd.append (file)
-        else:
-            cmd.append (uri)
+        # Git doesn't support multiple files
+        # we take just the first one
+        cmd.append (files and files[0] or uri)
 
         command = Command (cmd, cwd, env = {'PAGER' : ''})
         self._run_command (command, BLAME)
