@@ -248,7 +248,7 @@ class GitRepository (Repository):
         if rev is not None:
             cmd.append (rev)
         else:
-            cmd.append ('origin')
+            cmd.append ('origin/master')
 
         if files is not None:
             for file in files:
@@ -272,7 +272,7 @@ class GitRepository (Repository):
             cwd = os.getcwd ()
 
         if rev is None:
-            rev = 'HEAD'
+            rev = 'origin/master'
 
         cmd = ['git',  'ls-tree', '--name-only', '--full-name', '-r', rev]
 
