@@ -243,7 +243,7 @@ class GitRepository (Repository):
         else:
             cwd = os.getcwd ()
 
-        cmd = ['git', 'blame', '--root', '-l', '-t']
+        cmd = ['git', 'blame', '--root', '-l', '-t', '-f']
 
         if rev is not None:
             cmd.append (rev)
