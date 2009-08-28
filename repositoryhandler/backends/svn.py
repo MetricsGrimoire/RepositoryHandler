@@ -109,13 +109,7 @@ class SVNRepository (Repository):
 
     def get_uri_for_path (self, path):
         self._check_uri (path)
-        
-        if os.path.isfile (path):
-            path = os.path.dirname (path)
 
-        if not os.path.isdir (path):
-            return self.uri
-        
         try:
             info = get_info (path)
         except:

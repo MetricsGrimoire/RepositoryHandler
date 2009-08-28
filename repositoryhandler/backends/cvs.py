@@ -48,7 +48,10 @@ class CVSRepository (Repository):
 
     def __get_repository_for_path (self, path):
         if not os.path.isdir (path):
+            basename = os.path.basename (path)
             path = os.path.dirname (path)
+        else:
+            basename = None
 
         repository = os.path.join (path, 'CVS', 'Repository')
 
@@ -57,7 +60,10 @@ class CVSRepository (Repository):
         except IOError:
             raise RepositoryInvalidWorkingCopy ('"%s" does not appear to be a CVS working copy' % path)
 
-        return rpath
+        if basename is not None:
+            return os.path.join (rpath, basename)
+        else:
+            return rpath
 
     def _run_command (self, command, type, input = None):
         def error_handler (cmd, error):
