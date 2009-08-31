@@ -253,6 +253,8 @@ class GitRepository (Repository):
         else:
             cmd.append ('origin/master')
 
+        cmd.append ('--')
+
         # Git doesn't support multiple files
         # we take just the first one
         cmd.append (files and files[0] or uri)
