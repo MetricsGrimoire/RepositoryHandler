@@ -319,7 +319,13 @@ class SVNRepository (Repository):
 
         if rev is not None and target != '.':
             target += "@%s" % (rev)
-            
+        else:
+            # If the target contains an '@' we need to add
+            # another '@' at the end so that the first one is
+            # not considered as revision separator by svn
+            if '@' in target:
+                target += '@'
+
         cmd = ['svn', '-v', 'blame']
         
         if files is not None:
