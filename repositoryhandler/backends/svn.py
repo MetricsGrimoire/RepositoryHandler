@@ -302,7 +302,7 @@ class SVNRepository (Repository):
         command = Command (cmd, cwd, env = {'LC_ALL' : 'C'})
         self._run_command (command, DIFF)
 
-    def blame (self, uri, rev = None, files = None):
+    def blame (self, uri, rev = None, files = None, mc = False):
         # In SVN the path already contains the branch info
         # so no need for a branch parameter
         self._check_uri (uri)
