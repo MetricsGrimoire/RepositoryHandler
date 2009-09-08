@@ -243,7 +243,7 @@ class CVSRepository (Repository):
                 raise e
             
 
-    def blame (self, uri, rev = None, files = None):
+    def blame (self, uri, rev = None, files = None, mc = False):
         # In cvs rev already includes the branch info
         # so no need for a branch parameter
         self._check_srcdir (uri)
