@@ -60,7 +60,7 @@ def get_repository_from_path (path):
     try:
         uri = get_config (dir, 'remote.origin.url')
     except CommandError:
-        raise RepositoryInvalidWorkingCopy ('"%s" does not appear to be a Git working copy' % path)
+        uri = dir
 
     if uri is None or not uri:
         raise RepositoryInvalidWorkingCopy ('"%s" does not appear to be a Git working copy' % path)
@@ -182,17 +182,19 @@ class GitRepository (Repository):
 
         cmd = ['git', 'show']
 
-        directory = os.path.dirname (uri)
-
-        while not os.path.isdir (os.path.join (directory, ".git")):
-            directory = os.path.dirname (directory)
+        if uri != self.uri:
+            directory = os.path.dirname (uri)
+            while not os.path.isdir (os.path.join (directory, ".git")):
+                directory = os.path.dirname (directory)
+        else:
+            directory = uri
 
         target = uri[len (directory):].strip ("/")
             
         if rev is not None:
             target = "%s:%s" % (rev, target)
         else:
-            target = ":%s" % (target)
+            target = "HEAD:%s" % (target)
 
         cmd.append (target)
             
@@ -210,7 +212,13 @@ class GitRepository (Repository):
         else:
             cwd = os.getcwd ()
         
-        cmd = ['git', 'log', '--all', '--topo-order', '--pretty=fuller', '--parents', '--name-status', '-M', '-C', '--decorate', 'origin']
+        cmd = ['git', 'log', '--all', '--topo-order', '--pretty=fuller', '--parents', '--name-status', '-M', '-C', '--decorate']
+
+        try:
+            get_config (uri, 'remote.origin.url')
+            cmd.append ('origin')
+        except CommandError:
+            pass
 
         if rev is not None:
             cmd.append (rev)
@@ -251,7 +259,11 @@ class GitRepository (Repository):
         if rev is not None:
             cmd.append (rev)
         else:
-            cmd.append ('origin/master')
+            try:
+                get_config (uri, 'remote.origin.url')
+                cmd.append ('origin/master')
+            except CommandError:
+                pass
 
         cmd.append ('--')
 
@@ -275,7 +287,11 @@ class GitRepository (Repository):
             cwd = os.getcwd ()
 
         if rev is None:
-            rev = 'origin/master'
+            try:
+                get_config (uri, 'remote.origin.url')
+                rev = 'origin/master'
+            except CommandError:
+                rev = 'HEAD'
 
         cmd = ['git',  'ls-tree', '--name-only', '--full-name', '-r', rev]
 
