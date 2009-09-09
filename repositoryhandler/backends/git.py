@@ -24,6 +24,9 @@ from repositoryhandler.backends import Repository, RepositoryInvalidWorkingCopy,
 from repositoryhandler.backends.watchers import *
 
 def get_config (path, option = None):
+    if os.path.isfile (path):
+        path = os.path.dirname (path)
+
     cmd = ['git', 'config']
 
     if option is not None:
@@ -50,6 +53,9 @@ def get_config (path, option = None):
     return retval
 
 def get_repository_from_path (path):
+    if os.path.isfile (path):
+        path = os.path.dirname (path)
+
     dir = path
     while not os.path.isdir (os.path.join (dir, ".git")) and dir != "/":
         dir = os.path.dirname (dir)
