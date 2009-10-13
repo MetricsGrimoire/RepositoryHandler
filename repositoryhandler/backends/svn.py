@@ -302,6 +302,27 @@ class SVNRepository (Repository):
         command = Command (cmd, cwd, env = {'LC_ALL' : 'C'})
         self._run_command (command, DIFF)
 
+    def show (self, uri, rev = None):
+        self._check_uri (uri)
+
+        if os.path.isfile (uri):
+            cwd = os.path.dirname (uri)
+            target = os.path.basename (uri)
+        elif os.path.isdir (uri):
+            cwd = uri
+            target = '.'
+        else:
+            target = uri
+            cwd = os.getcwd ()
+
+        if rev is None:
+            info = get_info (uri)
+            rev = info['last changed rev']
+
+        cmd = ['svn', 'diff', '-c', rev, target]
+        command = Command (cmd, cwd, env = {'LC_ALL' : 'C'})
+        self._run_command (command, DIFF)
+
     def blame (self, uri, rev = None, files = None, mc = False):
         # In SVN the path already contains the branch info
         # so no need for a branch parameter
