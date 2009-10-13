@@ -125,7 +125,17 @@ class GitRepository (Repository):
             
         command = Command (cmd, path)
         command.run ()
-        
+
+    def __get_root_dir (self, uri):
+        if uri != self.uri:
+            directory = os.path.dirname (uri)
+            while not os.path.isdir (os.path.join (directory, ".git")):
+                directory = os.path.dirname (directory)
+        else:
+            directory = uri
+
+        return directory
+
     def checkout (self, module, rootdir, newdir = None, branch = None, rev = None):
         if newdir is not None:
             srcdir = os.path.join (rootdir, newdir)
@@ -188,15 +198,9 @@ class GitRepository (Repository):
 
         cmd = ['git', 'show']
 
-        if uri != self.uri:
-            directory = os.path.dirname (uri)
-            while not os.path.isdir (os.path.join (directory, ".git")):
-                directory = os.path.dirname (directory)
-        else:
-            directory = uri
+        cwd = self.__get_root_dir (uri)
+        target = uri[len (cwd):].strip ("/")
 
-        target = uri[len (directory):].strip ("/")
-            
         if rev is not None:
             target = "%s:%s" % (rev, target)
         else:
