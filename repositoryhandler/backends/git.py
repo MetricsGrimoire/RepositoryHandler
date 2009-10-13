@@ -243,8 +243,31 @@ class GitRepository (Repository):
         return
 
     def diff (self, uri, branch = None, revs = None, files = None):
-        # TODO
-        pass
+        self._check_uri (uri)
+
+        if os.path.isfile (uri):
+            cwd = self.__get_root_dir (uri)
+            files = [uri[len (cwd):].strip ("/")]
+        elif os.path.isdir (uri):
+            cwd = uri
+        else:
+            cwd = os.getcwd ()
+
+        cmd = ['git', 'diff']
+
+        if revs is not None:
+            if len (revs) == 1:
+                cmd.append (revs[0])
+            elif len (revs) > 1:
+                cmd.append ("%s..%s" % (revs[0], revs[1]))
+
+        cmd.append ("--")
+
+        if files is not None:
+            cmd.extend (files)
+
+        command = Command (cmd, cwd, env = {'PAGER' : ''})
+        self._run_command (command, DIFF)
 
     def blame (self, uri, rev = None, files = None, mc = False):
         self._check_uri (uri)
