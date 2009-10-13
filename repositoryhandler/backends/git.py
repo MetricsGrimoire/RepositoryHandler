@@ -273,6 +273,32 @@ class GitRepository (Repository):
         command = Command (cmd, cwd, env = {'PAGER' : ''})
         self._run_command (command, DIFF)
 
+    def show (self, uri, rev = None):
+        self._check_uri (uri)
+
+        if os.path.isfile (uri):
+            cwd = self.__get_root_dir (uri)
+            target = uri[len (cwd):].strip ("/")
+        elif os.path.isdir (uri):
+            cwd = uri
+            target = None
+        else:
+            cwd = os.getcwd ()
+            target = None
+
+        cmd = ['git', 'show', '--pretty=format:']
+
+        if rev is not None:
+            cmd.append (rev)
+
+        cmd.append ("--")
+
+        if target is not None:
+            cmd.append (target)
+
+        command = Command (cmd, cwd, env = {'PAGER' : ''})
+        self._run_command (command, DIFF)
+
     def blame (self, uri, rev = None, files = None, mc = False):
         self._check_uri (uri)
 
