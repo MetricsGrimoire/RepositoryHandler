@@ -31,6 +31,20 @@ Dependencies
  * CVS client
  * SVN client
  * WGET or curl
+ * Autoconf (for installation)
+
+How to install
+--------------
+
+To be used from other packages, RepositoryHandler should be installed:
+
+     > ./autogen.sh
+     > make
+     > sudo make install
+
+If root access is not possible, the "sudo" command will not be run,
+and the package will stay installed in the current directory. It can
+be used there by including it in the PKG_CONFIG_PATH environment variable.
 
 Examples
 --------
