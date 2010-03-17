@@ -78,12 +78,28 @@ class GitRepository (Repository):
 
     def __init__ (self, uri):
         Repository.__init__ (self, uri, 'git')
+
+        self.git_version = None
     
     def _check_uri (self, uri):
         type, repo_uri = get_repository_from_path (uri)
         if not repo_uri.startswith (self.uri):
             raise RepositoryInvalidWorkingCopy ('"%s" does not appear to be a Git working copy '
                                                 '(expected %s but got %s)' % (uri, self.uri, repo_uri))
+
+    def _get_git_version (self):
+        if self.git_version is not None:
+            return self.git_version
+
+        cmd = ['git', '--version']
+
+        command = Command (cmd)
+        out = command.run_sync ()
+
+        version = out.replace ("git version ", "")
+        self.git_version = tuple ([int (i) for i in version.split ('.')])
+
+        return self.git_version
 
     def _get_branches (self, path):
         cmd = ['git', 'branch']
@@ -221,8 +237,23 @@ class GitRepository (Repository):
             cwd = uri
         else:
             cwd = os.getcwd ()
-        
-        cmd = ['git', 'log', '--all', '--topo-order', '--pretty=fuller', '--parents', '--name-status', '-M', '-C', '--decorate']
+
+        cmd = ['git', 'log', '--all', '--topo-order', '--pretty=fuller', '--parents', '--name-status', '-M', '-C']
+
+        # Git < 1.6.4 -> --decorate
+        # Git = 1.6.4 -> broken
+        # Git > 1.6.4 -> --decorate=full
+        try:
+            major, minor, micro = self._get_git_version ()
+        except ValueError:
+            major, minor, micro, rev = self._get_git_version ()
+
+        if major <= 1 and minor < 6:
+            cmd.append ('--decorate')
+        elif major <= 1 and minor == 6 and micro <= 4:
+            cmd.append ('--decorate')
+        else:
+            cmd.append ('--decorate=full')
 
         try:
             get_config (uri, 'remote.origin.url')
