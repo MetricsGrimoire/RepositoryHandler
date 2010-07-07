@@ -246,7 +246,7 @@ class GitRepository (Repository):
         try:
             major, minor, micro = self._get_git_version ()
         except ValueError:
-            major, minor, micro, rev = self._get_git_version ()
+            major, minor, micro, extra = self._get_git_version ()
 
         if major <= 1 and minor < 6:
             cmd.append ('--decorate')
