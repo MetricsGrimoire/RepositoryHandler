@@ -224,7 +224,7 @@ class GitRepository (Repository):
 
         cmd.append (target)
             
-        command = Command (cmd, directory, env = {'PAGER' : ''})
+        command = Command (cmd, cwd, env = {'PAGER' : ''})
         self._run_command (command, CAT)
         
     def log (self, uri, rev = None, files = None):
