@@ -57,10 +57,10 @@ def get_repository_from_path (path):
         path = os.path.dirname (path)
 
     dir = path
-    while not os.path.isdir (os.path.join (dir, ".git")) and dir != "/":
+    while dir and not os.path.isdir (os.path.join (dir, ".git")) and dir != "/":
         dir = os.path.dirname (dir)
 
-    if dir == "/":
+    if not dir or dir == "/":
         raise RepositoryInvalidWorkingCopy ('"%s" does not appear to be a Git working copy' % path)
     
     try:
@@ -145,12 +145,12 @@ class GitRepository (Repository):
     def __get_root_dir (self, uri):
         if uri != self.uri:
             directory = os.path.dirname (uri)
-            while not os.path.isdir (os.path.join (directory, ".git")):
+            while directory and not os.path.isdir (os.path.join (directory, ".git")):
                 directory = os.path.dirname (directory)
         else:
             directory = uri
 
-        return directory
+        return directory or self.uri
 
     def checkout (self, module, rootdir, newdir = None, branch = None, rev = None):
         if newdir is not None:
