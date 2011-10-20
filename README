@@ -38,9 +38,7 @@ How to install
 
 To be used from other packages, RepositoryHandler should be installed:
 
-     > ./autogen.sh
-     > make
-     > sudo make install
+     > # python setup.py install
 
 If root access is not possible, the "sudo" command will not be run,
 and the package will stay installed in the current directory. It can
