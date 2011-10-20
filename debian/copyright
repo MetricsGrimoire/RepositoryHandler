@@ -1,6 +1,6 @@
 Format: http://dep.debian.net/deps/dep5
 Upstream-Name: repositoryhandler
-Upstream-Contact: Juan Francisco Gato Luis <jfcogato@libresoft.es>
+Upstream-Contact: Luis Cañas Díaz <lcanas@libresoft.es>
 Source: <http://projects.libresoft.es/projects/repositoryhandler>
 
 Files: *

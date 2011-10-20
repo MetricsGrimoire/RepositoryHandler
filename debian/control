@@ -1,8 +1,8 @@
 Source: repositoryhandler
 Section: misc
 Priority: optional
-Maintainer: Juan Francisco Gato Luis <jfcogato@libresoft.es>
-Build-Depends: debhelper (>= 7), python-support, python (>= 2.4) 
+Maintainer: Luis Cañas Díaz <lcanas@libresoft.es>
+Build-Depends: cdbs, debhelper (>= 8), python-support, python (>= 2.4)
 Standards-Version: 3.9.2
 Homepage: http://projects.libresoft.es/projects/repositoryhandler
 
@@ -10,4 +10,4 @@ Package: repositoryhandler
 Architecture: all
 Depends: ${misc:Depends}, ${python:Depends}, python-central
 Description: python library for handling code repositories
- python is a library for handling code repositories
+ Repository Handler is a python library for handling code repositories

@@ -1,3 +1,13 @@
+repositoryhandler (0.4-1) unstable; urgency=low
+
+  * New upstream bugfix release:
+    + debian/control:
+      - Maintainer changed
+    + debian/copyright:
+      - Upstream-Contact changed
+
+ -- Luis Cañas Díaz <lcanas@libresoft.es>  Wed, 20 Oct 2011 14:55:15 +0200
+
 repositoryhandler (0.3.0) unstable; urgency=low
 
   * Initial release (Closes: #123456)
