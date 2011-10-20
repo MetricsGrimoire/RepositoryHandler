@@ -1,7 +1,0 @@
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-pyexecdir=@pyexecdir@
-
-Name: Repository Handler
-Description: Python library for handling code repositories
-Version: @VERSION@
