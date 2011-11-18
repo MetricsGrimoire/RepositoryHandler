@@ -30,106 +30,113 @@ __all__ = [
         'RepositoryCommandError',
         'RepositoryCommandRunningError',
         'create_repository',
-        'register_backend', 
+        'register_backend',
         'create_repository_from_path'
 ]
+
 
 class RepositoryUnknownError (Exception):
     '''Unkown repository type'''
 
+
 class RepositoryInvalidWorkingCopy (Exception):
     '''Invalid Working Copy directory'''
 
+
 class RepositoryInvalidBranch (Exception):
     '''Invalid Branch'''
-    
+
+
 class InvalidWatch (Exception):
     '''Invalid watch type'''
+
 
 class RepositoryCommandError (CommandError):
     '''Error running a command'''
 
+
 class RepositoryCommandRunningError (CommandRunningError):
     '''Error running a command that is still running'''
+
 
 class Repository:
     '''Abstract class representing a file repository'''
 
-    def __init__ (self, uri, type):
+    def __init__(self, uri, type):
         self.uri = uri
         self.type = type
         self.watchers = {}
 
-    def get_uri (self):
+    def get_uri(self):
         return self.uri
 
-    def get_uri_for_path (self, path):
+    def get_uri_for_path(self, path):
         '''Returns the repository URI corresponding to the given local path'''
         return self.uri
-        
-    def get_type (self):
+
+    def get_type(self):
         return self.type
-        
-    def checkout (self, uri, rootdir, newdir = None, branch = None, rev = None):
+
+    def checkout(self, uri, rootdir, newdir=None, branch=None, rev=None):
         '''Checkout uri to the given directory'''
         raise NotImplementedError
 
-    def update (self, uri, rev = None):
+    def update(self, uri, rev=None):
         '''Update a working copy uri'''
         raise NotImplementedError
 
-    def cat (self, uri, rev = None):
+    def cat(self, uri, rev=None):
         '''Output the content of specified uri'''
         raise NotImplementedError
 
-    def log (self, uri, rev = None, files = None):
+    def log(self, uri, rev=None, files=None):
         '''Return log for working copy uri'''
         raise NotImplementedError
 
-    def rlog (self, module = None, rev = None, files = None):
+    def rlog(self, module=None, rev=None, files=None):
         '''Return log directly from the repository server'''
         raise NotImplementedError
 
-    def diff (self, uri, branch = None, revs = None, files = None):
+    def diff(self, uri, branch=None, revs=None, files=None):
         '''Return diff for files in working copy betweeen revisions'''
         raise NotImplementedError
 
-    def show (self, uri, rev = None):
+    def show(self, uri, rev=None):
         '''Convenient method to get the diff for a given revision'''
         raise NotImplementedError
 
-    def blame (self, uri, rev = None, files = None, mc = False):
+    def blame(self, uri, rev=None, files=None, mc=False):
         '''Return blame/annotate for files'''
         raise NotImplementedError
 
-    def ls (self, uri, rev = None):
+    def ls(self, uri, rev=None):
         '''List recursively all the files in the given uri'''
         raise NotImplementedError
 
-    def get_modules (self):
+    def get_modules(self):
         '''Return the list of modules of the repository'''
         raise NotImplementedError
 
-    def get_last_revision (self, uri):
+    def get_last_revision(self, uri):
         '''Return the last revision'''
-        raise NotImplementedError 
+        raise NotImplementedError
 
-    def add_watch (self, type, callback, user_data = None):
-        if type not in range (N_WATCHES):
-            raise InvalidWatch ('Type %d is not a valid watch type' % (type))
-        
-        if not self.watchers.has_key (type):
+    def add_watch(self, type, callback, user_data=None):
+        if type not in range(N_WATCHES):
+            raise InvalidWatch('Type %d is not a valid watch type' % (type))
+
+        if not type in self.watchers:
             self.watchers[type] = [(callback, user_data)]
         else:
-            self.watchers[type].append ((callback, user_data))
+            self.watchers[type].append((callback, user_data))
 
-        return len (self.watchers[type]) - 1
+        return len(self.watchers[type]) - 1
 
-    def remove_watch (self, type, watcher_id):
-        if type not in range (N_WATCHES):
-            raise InvalidWatch ('Type %d is not a valid watch type' % (type))
-        
-        if not self.watchers.has_key (type):
+    def remove_watch(self, type, watcher_id):
+        if type not in range(N_WATCHES):
+            raise InvalidWatch('Type %d is not a valid watch type' % (type))
+
+        if not type in self.watchers:
             return
 
         try:
@@ -139,68 +146,76 @@ class Repository:
         except:
             raise
 
-    def __run_callbacks (self, type, data):
-        if not self.watchers.has_key (type):
+    def __run_callbacks(self, type, data):
+        if not type in self.watchers:
             return
-    
+
         for cb, user_data in self.watchers[type]:
             if cb is None:
                 continue
-            cb (data, user_data)
+            cb(data, user_data)
 
-    def _run_command (self, command, type, input = None):
-        def callback (data):
-            self.__run_callbacks (type, data)
+    def _run_command(self, command, type, input=None):
+        def callback(data):
+            self.__run_callbacks(type, data)
 
         if DEBUG:
             print command.cmd
 
         try:
-            command.run (input, callback)
+            command.run(input, callback)
         except CommandError, e:
-            raise RepositoryCommandError (e.cmd, e.returncode, e.error)
+            raise RepositoryCommandError(e.cmd, e.returncode, e.error)
         except CommandRunningError, e:
-            raise RepositoryCommandRunningError (e.cmd, e.error)
+            raise RepositoryCommandRunningError(e.cmd, e.error)
+
 
 _backends = {}
-def register_backend (backend_name, backend_class):
+
+
+def register_backend(backend_name, backend_class):
     _backends[backend_name] = backend_class
 
-def _get_backend (backend_name):
+
+def _get_backend(backend_name):
     if backend_name not in _backends:
         try:
-            __import__ ('repositoryhandler.backends.%s' % backend_name)
+            __import__('repositoryhandler.backends.%s' % backend_name)
         except ImportError:
             pass
 
     if backend_name not in _backends:
-        raise RepositoryUnknownError ('Repository type %s not registered' % backend_name)
+        raise RepositoryUnknownError('Repository type %s not registered'
+                                     % backend_name)
 
     return _backends[backend_name]
 
-def create_repository (backend_name, uri):
-    repo_class = _get_backend (backend_name)
-    return repo_class (uri)
 
-def create_repository_from_path (path):
+def create_repository(backend_name, uri):
+    repo_class = _get_backend(backend_name)
+    return repo_class(uri)
+
+
+def create_repository_from_path(path):
     rep = None
     repo_types = ['cvs', 'svn', 'git', 'bzr']
     for repo_type in repo_types:
         try:
             backend = 'repositoryhandler.backends.%s' % repo_type
-            f = getattr (__import__ (backend, None, None, ['get_repository_from_path']), 
-                    'get_repository_from_path')
+            f = getattr(__import__(backend, None, None,
+                                   ['get_repository_from_path']),
+                        'get_repository_from_path')
         except ImportError:
             continue
 
-        try:    
-            type, uri = f (path)
-            rep = create_repository (type, uri)
+        try:
+            type, uri = f(path)
+            rep = create_repository(type, uri)
             if rep is not None:
                 return rep
         except:
             continue
 
     if rep is None:
-        raise RepositoryUnknownError ('Unknown repository type for path %s' % path)
-
+        raise RepositoryUnknownError('Unknown repository type for path %s'
+                                     % path)

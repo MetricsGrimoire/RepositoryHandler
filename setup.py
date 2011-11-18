@@ -19,10 +19,10 @@
 #
 from distutils.core import setup
 
-setup(name = "RepositoryHandler",
-      version = "0.4",
-      author =  "GSyC/LibreSoft, Universidad Rey Juan Carlos",
-      author_email = "libresoft-tools-devel@lists.morfeo-project.org",
-      description = "Python library for handling code repositories",
-      url = "https://projects.libresoft.es/projects/repositoryhandler",
-      packages = ['repositoryhandler', 'repositoryhandler.backends'])
+setup(name="RepositoryHandler",
+      version="0.4",
+      author="GSyC/LibreSoft, Universidad Rey Juan Carlos",
+      author_email="libresoft-tools-devel@lists.morfeo-project.org",
+      description="Python library for handling code repositories",
+      url="https://projects.libresoft.es/projects/repositoryhandler",
+      packages=['repositoryhandler', 'repositoryhandler.backends'])

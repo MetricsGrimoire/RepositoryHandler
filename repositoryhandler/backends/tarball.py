@@ -30,208 +30,224 @@ import zipfile
 import gzip
 import bz2
 
-def is_gzipfile (uri):
+
+def is_gzipfile(uri):
     try:
         import gzip
-        t = gzip.GzipFile (uri, "r")
-        t.close ()
+        t = gzip.GzipFile(uri, "r")
+        t.close()
         return True
     except:
         return False
 
-def is_bz2file (uri):
+
+def is_bz2file(uri):
     try:
         import bz2
-        t = bz2.BZ2File (uri, "r")
-        t.close ()
+        t = bz2.BZ2File(uri, "r")
+        t.close()
         return True
     except:
         return False
 
-class FileExtractorError (Exception):
+
+class FileExtractorError(Exception):
     """
     Raised if an error occurs during the extraction process
     """
 
-    def __init__ (self, msg):
-        Exception.__init__ (self, msg)
+    def __init__(self, msg):
+        Exception.__init__(self, msg)
+
 
 class FileExtractor:
 
-    def __init__ (self, uri):
+    def __init__(self, uri):
         self.uri = uri
 
-    def extract (self, path = None):
+    def extract(self, path=None):
         raise NotImplementedError
 
-class TarFileExtractor (FileExtractor):
 
-    def __init__ (self, uri):
-        FileExtractor.__init__ (self, uri)
+class TarFileExtractor(FileExtractor):
 
-    def extract (self, path = None):
+    def __init__(self, uri):
+        FileExtractor.__init__(self, uri)
+
+    def extract(self, path=None):
         try:
-            tar = tarfile.open (self.uri, 'r:*')
+            tar = tarfile.open(self.uri, 'r:*')
         except tarfile.TarError, e:
-            raise FileExtractorError ("FileExtractor Error: Opening tarfile %s: %s" % 
-                                      (self.uri, str (e)))
+            raise FileExtractorError("FileExtractor Error: Opening tarfile "
+                                     "%s: %s" % (self.uri, str(e)))
 
         if path is None:
-            path = os.cwd ()
+            path = os.cwd()
 
         try:
-            tar.extractall (path)
+            tar.extractall(path)
         except tarfile.TarError, e:
-            tar.close ()
-            raise FileExtractorError ("FileExtractor Error: Extracting tarfile %s: %s" % 
-                                      (self.uri, str (e)))
+            tar.close()
+            raise FileExtractorError("FileExtractor Error: Extracting tarfile"
+                                     " %s: %s" % (self.uri, str(e)))
 
-        tar.close ()
+        tar.close()
 
-class ZipFileExtractor (FileExtractor):
 
-    def __init__ (self, uri):
-        FileExtractor.__init__ (self, uri)
+class ZipFileExtractor(FileExtractor):
 
-    def extract (self, path = None):
+    def __init__(self, uri):
+        FileExtractor.__init__(self, uri)
+
+    def extract(self, path=None):
         try:
-            zip = zipfile.ZipFile (self.uri, 'r')
+            zip = zipfile.ZipFile(self.uri, 'r')
         except zipfile.BadZipfile, e:
-            raise FileExtractorError ("FileExtractor Error: Opening zipfile %s: %s" % 
-                                      (self.uri, str (e)))
+            raise FileExtractorError("FileExtractor Error: Opening zipfile"
+                                     " %s: %s" % (self.uri, str(e)))
 
         if path is None:
-            path = os.cwd ()
+            path = os.cwd()
 
-        for name in zip.namelist ():
+        for name in zip.namelist():
             try:
-                fpath = os.path.join (path, name)
+                fpath = os.path.join(path, name)
 
                 # Check if 'name' is a directory
                 if name[-1] == '/':
                     try:
-                        os.makedirs (fpath)
+                        os.makedirs(fpath)
                     except IOError, e:
-                        zip.close ()
-                        raise FileExtractorError ("FileExtractor Error: Write error while extracting zipfile %s: %s" % 
-                                                  (self.uri, str (e)))
+                        zip.close()
+                        raise FileExtractorError("FileExtractor Error: Write "
+                                                 "error while extracting "
+                                                 "zipfile %s: %s" %
+                                                 (self.uri, str(e)))
                 else:
-                    bytes = zip.read (name)
+                    bytes = zip.read(name)
 
-                    f = open (fpath, 'w')
+                    f = open(fpath, 'w')
                     try:
-                        f.write (bytes)
+                        f.write(bytes)
                     except IOError, e:
-                        zip.close ()
-                        f.close ()
-                        raise FileExtractorError ("FileExtractor Error: Write error while extracting zipfile %s: %s" %
-                                                  (self.uri, str (e)))
-                    f.close ()
+                        zip.close()
+                        f.close()
+                        raise FileExtractorError("FileExtractor Error: Write "
+                                                 "error while extracting "
+                                                 "zipfile %s: %s" %
+                                                 (self.uri, str(e)))
+                    f.close()
             except zipfile.BadZipfile, e:
-                zip.close ()
-                raise FileExtractorError ("FileExtractor Error: Reading zipfile %s: %s" % 
-                                          (self.uri, str (e)))
-        zip.close ()
+                zip.close()
+                raise FileExtractorError("FileExtractor Error: Reading "
+                                         "zipfile %s: %s" % (self.uri, str(e)))
+        zip.close()
 
-class GzipFileExtractor (FileExtractor):
 
-    def __init__ (self, uri):
-        FileExtractor.__init__ (self, uri)
+class GzipFileExtractor(FileExtractor):
 
-    def extract (self, path = None):
+    def __init__(self, uri):
+        FileExtractor.__init__(self, uri)
+
+    def extract(self, path=None):
         try:
-            gz = gzip.GzipFile (self.uri, 'r')
+            gz = gzip.GzipFile(self.uri, 'r')
         except Exception, e:
-            raise FileExtractorError ("FileExtractor Error: Opening gzip %s: %s" % 
-                                      (self.uri, str (e)))
+            raise FileExtractorError("FileExtractor Error: Opening gzip "
+                                     "%s: %s" % (self.uri, str(e)))
 
         if path is None:
-            path = os.cwd ()
+            path = os.cwd()
 
         try:
-            path = os.path.join (path, self.uri.split ("/")[-1].replace (".gz", ""))
-            f = open (path, "w")
-            f.write (gz.read ())
-            f.close ()
+            path = os.path.join(path,
+                                self.uri.split("/")[-1].replace(".gz", ""))
+            f = open(path, "w")
+            f.write(gz.read())
+            f.close()
         except Exception, e:
-            gz.close ()
-            raise FileExtractorError ("FileExtractor Error: Extracting gzip %s: %s" % 
-                                      (self.uri, str (e)))
+            gz.close()
+            raise FileExtractorError("FileExtractor Error: Extracting gzip "
+                                     "%s: %s" % (self.uri, str(e)))
 
-        gz.close ()
+        gz.close()
 
-class Bzip2FileExtractor (FileExtractor):
 
-    def __init__ (self, uri):
-        FileExtractor.__init__ (self, uri)
+class Bzip2FileExtractor(FileExtractor):
 
-    def extract (self, path = None):
+    def __init__(self, uri):
+        FileExtractor.__init__(self, uri)
+
+    def extract(self, path=None):
         try:
-            bz2 = bz2.BZ2File (self.uri, 'r')
+            bz2 = bz2.BZ2File(self.uri, 'r')
         except Exception, e:
-            raise FileExtractorError ("FileExtractor Error: Opening bzip2 %s: %s" % 
-                                      (self.uri, str (e)))
+            raise FileExtractorError("FileExtractor Error: Opening bzip2 "
+                                     "%s: %s" % (self.uri, str(e)))
 
         if path is None:
-            path = os.cwd ()
+            path = os.cwd()
 
         try:
-            path = os.path.join (path, self.uri.split ("/")[-1].replace (".bz2", ""))
-            f = open (path, "w")
-            f.write (bz2.read ())
-            f.close ()
+            path = os.path.join(path,
+                                self.uri.split("/")[-1].replace(".bz2", ""))
+            f = open(path, "w")
+            f.write(bz2.read())
+            f.close()
         except Exception, e:
-            bz2.close ()
-            raise FileExtractorError ("FileExtractor Error: Extracting bzip2 %s: %s" % 
-                                      (self.uri, str (e)))
+            bz2.close()
+            raise FileExtractorError("FileExtractor Error: Extracting bzip2"
+                                     " %s: %s" % (self.uri, str(e)))
 
-        bz2.close ()
-
-def create_file_extractor (uri):
-    if tarfile.is_tarfile (uri):
-        return TarFileExtractor (uri)
-    elif zipfile.is_zipfile (uri):
-        return ZipFileExtractor (uri)
-    elif is_gzipfile (uri):
-        return GzipFileExtractor (uri)
-    elif is_b2file (uri):
-        return Bzip2FileExtractor (uri)
-    
-    raise FileExtractorError ("FileExtractor Error: URI '%s' doesn't look like a valid tarball or compressed file" % (uri))
+        bz2.close()
 
 
-class TarballRepository (Repository):
+def create_file_extractor(uri):
+    if tarfile.is_tarfile(uri):
+        return TarFileExtractor(uri)
+    elif zipfile.is_zipfile(uri):
+        return ZipFileExtractor(uri)
+    elif is_gzipfile(uri):
+        return GzipFileExtractor(uri)
+    elif is_b2file(uri):
+        return Bzip2FileExtractor(uri)
+
+    raise FileExtractorError("FileExtractor Error: URI '%s' doesn't look like "
+                             "a valid tarball or compressed file" % (uri))
+
+
+class TarballRepository(Repository):
     '''Tarball Repository'''
 
-    def __init__ (self, uri):
-        Repository.__init__ (self, uri, 'tarball')
+    def __init__(self, uri):
+        Repository.__init__(self, uri, 'tarball')
 
-    def checkout (self, module, rootdir, newdir = None, branch = None, rev = None):
+    def checkout(self, module, rootdir, newdir=None, branch=None, rev=None):
         if newdir is not None:
-            srcdir = os.path.join (rootdir, newdir)
+            srcdir = os.path.join(rootdir, newdir)
         else:
             srcdir = rootdir
-        if not os.path.exists (srcdir):
-            os.makedirs (srcdir)
-       
-        if os.path.exists (module):
+        if not os.path.exists(srcdir):
+            os.makedirs(srcdir)
+
+        if os.path.exists(module):
             tarball_path = module
         else:
             # Download module to rootdir
-            filename = os.path.basename (module).split ('?')[0]
-            tarball_path = os.path.join (srcdir, filename)
-            cmd = get_download_command (module, tarball_path, '/dev/stdout')
+            filename = os.path.basename(module).split('?')[0]
+            tarball_path = os.path.join(srcdir, filename)
+            cmd = get_download_command(module, tarball_path, '/dev/stdout')
             if cmd is None:
                 return
 
-            command = Command (cmd, srcdir)
-            self._run_command (command, CHECKOUT)
+            command = Command(cmd, srcdir)
+            self._run_command(command, CHECKOUT)
 
-            if not os.path.exists (tarball_path):
+            if not os.path.exists(tarball_path):
                 return
 
         # Unpack the tarball
-        fe = create_file_extractor (tarball_path)
-        fe.extract (srcdir)
+        fe = create_file_extractor(tarball_path)
+        fe.extract(srcdir)
 
-register_backend ('tarball', TarballRepository)
+register_backend('tarball', TarballRepository)

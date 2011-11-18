@@ -20,37 +20,39 @@ import os
 from FindProgram import find_program
 from Command import Command
 
-def get_download_command (uri, dest_path, output):
-    wget = find_program ('wget')
+
+def get_download_command(uri, dest_path, output):
+    wget = find_program('wget')
     if wget is None:
         return None
-    
+
     cmd = [wget, uri, '-O', dest_path, '-o', output]
-    if uri.startswith ('https://'):
-        cmd.append ('--no-check-certificate')
-        
+    if uri.startswith('https://'):
+        cmd.append('--no-check-certificate')
+
     return cmd
 
-def download (uri, dirname = None, output = None):
+
+def download(uri, dirname=None, output=None):
 
     if dirname is None:
-        dirname = os.getcwd ()
+        dirname = os.getcwd()
 
     if output is None:
         output = '/dev/null'
 
-    dest_path = os.path.join (dirname, os.path.basename (uri))
-    cmd = get_download_command (uri, dest_path, output)
+    dest_path = os.path.join(dirname, os.path.basename(uri))
+    cmd = get_download_command(uri, dest_path, output)
     if cmd is None:
         return False
 
-    command = Command (cmd, dirname)
+    command = Command(cmd, dirname)
     try:
-        command.run ()
+        command.run()
     except:
         return False
 
-    return os.path.exists (dest_path)
+    return os.path.exists(dest_path)
 
 if __name__ == '__main__':
     import sys
@@ -65,8 +67,7 @@ if __name__ == '__main__':
     except:
         output = None
 
-    if download (uri, dir, output):
+    if download(uri, dir, output):
         print "SUSSCESS"
     else:
         print "FAILED"
-        

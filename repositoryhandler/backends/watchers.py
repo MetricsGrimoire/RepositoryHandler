@@ -8,4 +8,4 @@ N_WATCHES = 7
     BLAME,
     CAT,
     LS
-) = range (N_WATCHES)
+) = range(N_WATCHES)

@@ -20,151 +20,160 @@ import os
 import re
 
 from repositoryhandler.Command import Command, CommandError
-from repositoryhandler.backends import Repository, RepositoryInvalidWorkingCopy, register_backend
+from repositoryhandler.backends import Repository,\
+     RepositoryInvalidWorkingCopy, register_backend
 from repositoryhandler.backends.watchers import *
 
-def get_config (path, option = None):
-    if os.path.isfile (path):
-        path = os.path.dirname (path)
+
+def get_config(path, option=None):
+    if os.path.isfile(path):
+        path = os.path.dirname(path)
 
     cmd = ['git', 'config']
 
     if option is not None:
-        cmd.extend (['--get', option])
+        cmd.extend(['--get', option])
     else:
-        cmd.extend (['-l'])
+        cmd.extend(['-l'])
 
-    command = Command (cmd, path, env = {'PAGER' : ''})
-    out = command.run_sync ()
+    command = Command(cmd, path, env={'PAGER': ''})
+    out = command.run_sync()
 
     if option is not None:
-        return out.strip ('\n\t ')
+        return out.strip('\n\t ')
 
     retval = {}
-    for line in out.splitlines ():
+    for line in out.splitlines():
         if '=' not in line:
             continue
-        key, value = line.split ('=', 1)
-        retval[key.lower ().strip ()] = value.strip ('\n\t ')
+        key, value = line.split('=', 1)
+        retval[key.lower().strip()] = value.strip('\n\t ')
 
     if retval == {}:
         return None
 
     return retval
 
-def get_repository_from_path (path):
-    if os.path.isfile (path):
-        path = os.path.dirname (path)
+
+def get_repository_from_path(path):
+    if os.path.isfile(path):
+        path = os.path.dirname(path)
 
     dir = path
-    while dir and not os.path.isdir (os.path.join (dir, ".git")) and dir != "/":
-        dir = os.path.dirname (dir)
+    while dir and not os.path.isdir(os.path.join(dir, ".git")) and dir != "/":
+        dir = os.path.dirname(dir)
 
     if not dir or dir == "/":
-        raise RepositoryInvalidWorkingCopy ('"%s" does not appear to be a Git working copy' % path)
-    
+        raise RepositoryInvalidWorkingCopy('"%s" does not appear to be a Git '
+                                           'working copy' % path)
     try:
-        uri = get_config (dir, 'remote.origin.url')
+        uri = get_config(dir, 'remote.origin.url')
     except CommandError:
         uri = dir
 
     if uri is None or not uri:
-        raise RepositoryInvalidWorkingCopy ('"%s" does not appear to be a Git working copy' % path)
+        raise RepositoryInvalidWorkingCopy('"%s" does not appear to be a Git '
+                                           'working copy' % path)
 
     return 'git', uri
-        
-class GitRepository (Repository):
+
+
+class GitRepository(Repository):
     '''Git Repository'''
 
-    def __init__ (self, uri):
-        Repository.__init__ (self, uri, 'git')
+    def __init__(self, uri):
+        Repository.__init__(self, uri, 'git')
 
         self.git_version = None
-    
-    def _check_uri (self, uri):
-        type, repo_uri = get_repository_from_path (uri)
-        if not repo_uri.startswith (self.uri):
-            raise RepositoryInvalidWorkingCopy ('"%s" does not appear to be a Git working copy '
-                                                '(expected %s but got %s)' % (uri, self.uri, repo_uri))
 
-    def _get_git_version (self):
+    def _check_uri(self, uri):
+        type, repo_uri = get_repository_from_path(uri)
+        if not repo_uri.startswith(self.uri):
+            raise RepositoryInvalidWorkingCopy('"%s" does not appear to be a '
+                                               'Git working copy (expected %s'
+                                               ' but got %s)' %
+                                               (uri, self.uri, repo_uri))
+
+    def _get_git_version(self):
         if self.git_version is not None:
             return self.git_version
 
         cmd = ['git', '--version']
 
-        command = Command (cmd)
-        out = command.run_sync ()
+        command = Command(cmd)
+        out = command.run_sync()
 
-        version = out.replace ("git version ", "")
-        self.git_version = tuple ([int (i) for i in version.split ('.')])
+        version = out.replace("git version ", "")
+        self.git_version = tuple([int(i) for i in version.split('.')])
 
         return self.git_version
 
-    def _get_branches (self, path):
+    def _get_branches(self, path):
         cmd = ['git', 'branch']
-        
-        command = Command (cmd, path)
-        out = command.run_sync ()
 
-        patt = re.compile ("^\* (.*)$")
-        
+        command = Command(cmd, path)
+        out = command.run_sync()
+
+        patt = re.compile("^\*(.*)$")
+
         i = 0
         current = 0
         retval = []
-        for line in out.splitlines ():
-            if line.startswith (self.uri):
+        for line in out.splitlines():
+            if line.startswith(self.uri):
                 continue
 
-            match = patt.match (line)
+            match = patt.match(line)
             if match:
                 current = i
-                retval.append (match.group (1).strip (' '))
+                retval.append(match.group(1).strip(' '))
             else:
-                retval.append (line.strip (' '))
+                retval.append(line.strip(' '))
             i += 1
 
         return current, retval
-    
-    def _checkout_branch (self, path, branch):
-        self._check_uri (path)
 
-        current, branches = self._get_branches (path)
+    def _checkout_branch(self, path, branch):
+        self._check_uri(path)
+
+        current, branches = self._get_branches(path)
 
         if branch in branches:
-            if branches.index (branch) == current:
+            if branches.index(branch) == current:
                 return
 
             cmd = ['git', 'checkout', branch]
         else:
             cmd = ['git', 'checkout', '-b', branch, 'origin/%s' % (branch)]
-            
-        command = Command (cmd, path)
-        command.run ()
 
-    def __get_root_dir (self, uri):
+        command = Command(cmd, path)
+        command.run()
+
+    def __get_root_dir(self, uri):
         if uri != self.uri:
-            directory = os.path.dirname (uri)
-            while directory and not os.path.isdir (os.path.join (directory, ".git")):
-                directory = os.path.dirname (directory)
+            directory = os.path.dirname(uri)
+            while directory and not os.path.isdir(os.path.join(directory,
+                                                               ".git")):
+                directory = os.path.dirname(directory)
         else:
             directory = uri
 
         return directory or self.uri
 
-    def checkout (self, module, rootdir, newdir = None, branch = None, rev = None):
+    def checkout(self, module, rootdir, newdir=None, branch=None, rev=None):
         if newdir is not None:
-            srcdir = os.path.join (rootdir, newdir)
+            srcdir = os.path.join(rootdir, newdir)
         elif newdir == '.':
             srcdir = rootdir
         else:
             if module == '.':
-                srcdir = os.path.join (rootdir, os.path.basename (self.uri.rstrip ('/')))
+                srcdir = os.path.join(rootdir,
+                                      os.path.basename(self.uri.rstrip('/')))
             else:
-                srcdir = os.path.join (rootdir, module)
-        if os.path.exists (srcdir):
+                srcdir = os.path.join(rootdir, module)
+        if os.path.exists(srcdir):
             try:
-                self.update (srcdir, rev)
+                self.update(srcdir, rev)
                 return
             except RepositoryInvalidWorkingCopy:
                 # If srcdir is not a valid working copy,
@@ -175,210 +184,211 @@ class GitRepository (Repository):
         if module == '.':
             uri = self.uri
         else:
-            uri = os.path.join (self.uri, module)
+            uri = os.path.join(self.uri, module)
 
         cmd = ['git', 'clone', uri]
 
         if newdir is not None:
-            cmd.append (newdir)
+            cmd.append(newdir)
         elif module == '.':
-            cmd.append (os.path.basename (uri.rstrip ('/')))
+            cmd.append(os.path.basename(uri.rstrip('/')))
         else:
-            cmd.append (module)
+            cmd.append(module)
 
-        command = Command (cmd, rootdir)
-        self._run_command (command, CHECKOUT)
+        command = Command(cmd, rootdir)
+        self._run_command(command, CHECKOUT)
 
         if branch is not None:
-            self._checkout_branch (srcdir, branch)
+            self._checkout_branch(srcdir, branch)
 
-    def update (self, uri, rev = None):
-        self._check_uri (uri)
+    def update(self, uri, rev=None):
+        self._check_uri(uri)
 
         branch = rev
         if branch is not None:
-            self._checkout_branch (uri, branch)
-        
+            self._checkout_branch(uri, branch)
+
         cmd = ['git', 'pull']
 
-        if os.path.isfile (uri):
-            directory = os.path.dirname (uri)
+        if os.path.isfile(uri):
+            directory = os.path.dirname(uri)
         else:
             directory = uri
 
-        command = Command (cmd, directory)
-        self._run_command (command, UPDATE)
+        command = Command(cmd, directory)
+        self._run_command(command, UPDATE)
 
-    def cat (self, uri, rev = None):
-        self._check_uri (uri)
+    def cat(self, uri, rev=None):
+        self._check_uri(uri)
 
         cmd = ['git', 'show']
 
-        cwd = self.__get_root_dir (uri)
-        target = uri[len (cwd):].strip ("/")
+        cwd = self.__get_root_dir(uri)
+        target = uri[len(cwd):].strip("/")
 
         if rev is not None:
             target = "%s:%s" % (rev, target)
         else:
             target = "HEAD:%s" % (target)
 
-        cmd.append (target)
-            
-        command = Command (cmd, cwd, env = {'PAGER' : ''})
-        self._run_command (command, CAT)
-        
-    def log (self, uri, rev = None, files = None):
-        self._check_uri (uri)
+        cmd.append(target)
 
-        if os.path.isfile (uri):
-            cwd = os.path.dirname (uri)
-            files = [os.path.basename (uri)]
-        elif os.path.isdir (uri):
+        command = Command(cmd, cwd, env={'PAGER': ''})
+        self._run_command(command, CAT)
+
+    def log(self, uri, rev=None, files=None):
+        self._check_uri(uri)
+
+        if os.path.isfile(uri):
+            cwd = os.path.dirname(uri)
+            files = [os.path.basename(uri)]
+        elif os.path.isdir(uri):
             cwd = uri
         else:
-            cwd = os.getcwd ()
+            cwd = os.getcwd()
 
-        cmd = ['git', 'log', '--all', '--topo-order', '--pretty=fuller', '--parents', '--name-status', '-M', '-C']
+        cmd = ['git', 'log', '--all', '--topo-order', '--pretty=fuller',
+               '--parents', '--name-status', '-M', '-C']
 
         # Git < 1.6.4 -> --decorate
         # Git = 1.6.4 -> broken
         # Git > 1.6.4 -> --decorate=full
         try:
-            major, minor, micro = self._get_git_version ()
+            major, minor, micro = self._get_git_version()
         except ValueError:
-            major, minor, micro, extra = self._get_git_version ()
+            major, minor, micro, extra = self._get_git_version()
 
         if major <= 1 and minor < 6:
-            cmd.append ('--decorate')
+            cmd.append('--decorate')
         elif major <= 1 and minor == 6 and micro <= 4:
-            cmd.append ('--decorate')
+            cmd.append('--decorate')
         else:
-            cmd.append ('--decorate=full')
+            cmd.append('--decorate=full')
 
         try:
-            get_config (uri, 'remote.origin.url')
-            cmd.append ('origin')
+            get_config(uri, 'remote.origin.url')
+            cmd.append('origin')
         except CommandError:
             pass
 
         if rev is not None:
-            cmd.append (rev)
+            cmd.append(rev)
 
         if files is not None:
             for file in files:
-                cmd.append (file)
+                cmd.append(file)
         elif cwd != uri:
-            cmd.append (uri)
+            cmd.append(uri)
 
-        command = Command (cmd, cwd, env = {'PAGER' : ''})
-        self._run_command (command, LOG)
+        command = Command(cmd, cwd, env={'PAGER': ''})
+        self._run_command(command, LOG)
 
-    def rlog (self, module = None, rev = None, files = None):
+    def rlog(self, module=None, rev=None, files=None):
         # Not supported by Git
         return
 
-    def diff (self, uri, branch = None, revs = None, files = None):
-        self._check_uri (uri)
+    def diff(self, uri, branch=None, revs=None, files=None):
+        self._check_uri(uri)
 
-        if os.path.isfile (uri):
-            cwd = self.__get_root_dir (uri)
-            files = [uri[len (cwd):].strip ("/")]
-        elif os.path.isdir (uri):
+        if os.path.isfile(uri):
+            cwd = self.__get_root_dir(uri)
+            files = [uri[len(cwd):].strip("/")]
+        elif os.path.isdir(uri):
             cwd = uri
         else:
-            cwd = os.getcwd ()
+            cwd = os.getcwd()
 
         cmd = ['git', 'diff']
 
         if revs is not None:
-            if len (revs) == 1:
-                cmd.append (revs[0])
-            elif len (revs) > 1:
-                cmd.append ("%s..%s" % (revs[0], revs[1]))
+            if len(revs) == 1:
+                cmd.append(revs[0])
+            elif len(revs) > 1:
+                cmd.append("%s..%s" % (revs[0], revs[1]))
 
-        cmd.append ("--")
+        cmd.append("--")
 
         if files is not None:
-            cmd.extend (files)
+            cmd.extend(files)
 
-        command = Command (cmd, cwd, env = {'PAGER' : ''})
-        self._run_command (command, DIFF)
+        command = Command(cmd, cwd, env={'PAGER': ''})
+        self._run_command(command, DIFF)
 
-    def show (self, uri, rev = None):
-        self._check_uri (uri)
+    def show(self, uri, rev=None):
+        self._check_uri(uri)
 
-        if os.path.isfile (uri):
-            cwd = self.__get_root_dir (uri)
-            target = uri[len (cwd):].strip ("/")
-        elif os.path.isdir (uri):
+        if os.path.isfile(uri):
+            cwd = self.__get_root_dir(uri)
+            target = uri[len(cwd):].strip("/")
+        elif os.path.isdir(uri):
             cwd = uri
             target = None
         else:
-            cwd = os.getcwd ()
+            cwd = os.getcwd()
             target = None
 
         cmd = ['git', 'show', '--pretty=format:']
 
         if rev is not None:
-            cmd.append (rev)
+            cmd.append(rev)
 
-        cmd.append ("--")
+        cmd.append("--")
 
         if target is not None:
-            cmd.append (target)
+            cmd.append(target)
 
-        command = Command (cmd, cwd, env = {'PAGER' : ''})
-        self._run_command (command, DIFF)
+        command = Command(cmd, cwd, env={'PAGER': ''})
+        self._run_command(command, DIFF)
 
-    def blame (self, uri, rev = None, files = None, mc = False):
-        self._check_uri (uri)
+    def blame(self, uri, rev=None, files=None, mc=False):
+        self._check_uri(uri)
 
-        if os.path.isfile (uri):
-            cwd = os.path.dirname (uri)
-            files = [os.path.basename (uri)]
-        elif os.path.isdir (uri):
+        if os.path.isfile(uri):
+            cwd = os.path.dirname(uri)
+            files = [os.path.basename(uri)]
+        elif os.path.isdir(uri):
             cwd = uri
         else:
-            cwd = os.getcwd ()
+            cwd = os.getcwd()
 
         cmd = ['git', 'blame', '--root', '-l', '-t', '-f']
 
         if mc:
-            cmd.extend (['-M', '-C'])
+            cmd.extend(['-M', '-C'])
 
         if rev is not None:
-            cmd.append (rev)
+            cmd.append(rev)
         else:
             try:
-                get_config (uri, 'remote.origin.url')
-                cmd.append ('origin/master')
+                get_config(uri, 'remote.origin.url')
+                cmd.append('origin/master')
             except CommandError:
                 pass
 
-        cmd.append ('--')
+        cmd.append('--')
 
         # Git doesn't support multiple files
         # we take just the first one
-        cmd.append (files and files[0] or uri)
+        cmd.append(files and files[0] or uri)
 
-        command = Command (cmd, cwd, env = {'PAGER' : ''})
-        self._run_command (command, BLAME)
+        command = Command(cmd, cwd, env={'PAGER': ''})
+        self._run_command(command, BLAME)
 
-    def ls (self, uri, rev = None):
-        self._check_uri (uri)
+    def ls(self, uri, rev=None):
+        self._check_uri(uri)
 
         target = None
-        if os.path.isfile (uri):
-            cwd = os.path.dirname (uri)
-            target = os.path.basename (uri)
-        elif os.path.isdir (uri):
+        if os.path.isfile(uri):
+            cwd = os.path.dirname(uri)
+            target = os.path.basename(uri)
+        elif os.path.isdir(uri):
             cwd = uri
         else:
-            cwd = os.getcwd ()
+            cwd = os.getcwd()
 
         if rev is None:
             try:
-                get_config (uri, 'remote.origin.url')
+                get_config(uri, 'remote.origin.url')
                 rev = 'origin/master'
             except CommandError:
                 rev = 'HEAD'
@@ -386,29 +396,29 @@ class GitRepository (Repository):
         cmd = ['git',  'ls-tree', '--name-only', '--full-name', '-r', rev]
 
         if target is not None:
-            cmd.append (target)
+            cmd.append(target)
 
-        command = Command (cmd, cwd, env = {'PAGER' : ''})
-        self._run_command (command, LS)
+        command = Command(cmd, cwd, env={'PAGER': ''})
+        self._run_command(command, LS)
 
-    def get_modules (self):
+    def get_modules(self):
         #Not supported by Git
         return []
 
-    def get_last_revision (self, uri):
-        self._check_uri (uri)
+    def get_last_revision(self, uri):
+        self._check_uri(uri)
 
         cmd = ['git', 'rev-list', 'HEAD^..HEAD']
 
-        command = Command (cmd, uri, env = {'PAGER' : ''})
+        command = Command(cmd, uri, env={'PAGER': ''})
         try:
-            out = command.run_sync ()
+            out = command.run_sync()
         except:
             return None
 
         if out == "":
             return None
 
-        return out.strip ('\n\t ')
+        return out.strip('\n\t ')
 
-register_backend ('git', GitRepository)
+register_backend('git', GitRepository)
