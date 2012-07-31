@@ -26,8 +26,8 @@ from repositoryhandler.backends import(Repository,
                                        register_backend)
 from repositoryhandler.backends.watchers import *
 
-SSL_CERTIFICATE_QUESTION = "(R)eject, accept(t)emporarily "\
-                           "or accept(p)ermanently?"
+SSL_CERTIFICATE_QUESTION = "(R)eject, accept (t)emporarily "\
+                           "or accept (p)ermanently?"
 
 
 def run_command_sync(command):
@@ -135,7 +135,7 @@ class SVNRepository(Repository):
             # Read error message
             question = e.error.split('\n')[-1]
             if question.strip() == SSL_CERTIFICATE_QUESTION:
-                Repository._run_command(command, type, 'p\n')
+                Repository._run_command(self, command, type, 'p\n')
 
     def _check_uri(self, uri):
         def is_local(uri):
