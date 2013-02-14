@@ -44,14 +44,32 @@ def run_command_sync(command):
     return command.run()
 
 
-def get_info(uri):
+def get_auth_info(uri):
+    import re
+
+    auth = {'uri' : uri,
+            'user' : None,
+            'password' : None}
+
+    m = re.compile("^.*://(.+):(.+)@.*$").match(uri)
+    if m is not None:
+        auth['user'] = m.group(1)
+        auth['password'] = m.group(2)
+        auth['uri'] = uri.replace(auth['user'] + ':'
+                                  + auth['password'] + '@', '')
+    return auth
+
+def get_info(uri, user=None, passwd=None):
     if os.path.isdir(uri):
         path = uri
         uri = '.'
     else:
         path = '.'
 
-    cmd = ['svn', 'info', uri]
+    if (user is not None) and (passwd is not None):
+        cmd = ['svn', 'info', uri, '--username', user, '--password', passwd]
+    else:
+        cmd = ['svn', 'info', uri]
 
     command = Command(cmd, path, env={'LC_ALL': 'C'})
     out = run_command_sync(command)
@@ -69,14 +87,17 @@ def get_info(uri):
     return retval
 
 
-def list_files(uri):
+def list_files(uri, user=None, passwd=None):
     if os.path.isdir(uri):
         path = uri
         uri = '.'
     else:
         path = '.'
 
-    cmd = ['svn', 'ls', uri]
+    if (user is not None) and (passwd is not None):
+        cmd = ['svn', 'ls', uri, '--username', user, '--password', passwd]
+    else:
+        cmd = ['svn', 'ls', uri]
 
     command = Command(cmd, path, env={'LC_ALL': 'C'})
     out = run_command_sync(command)
@@ -111,7 +132,11 @@ class SVNRepository(Repository):
 
     def __init__(self, uri):
         try:
-            info = get_info(uri)
+            auth = get_auth_info(uri)
+            self.user = auth['user']
+            self.passwd = auth['password']
+
+            info = get_info(auth['uri'], self.user, self.passwd)
             root = info['repository root']
         except:
             root = uri
@@ -216,27 +241,31 @@ class SVNRepository(Repository):
         self._run_command(command, CHECKOUT)
 
     def update(self, uri, rev=None, force=False):
+        repo_uri = get_auth_info(uri)['uri']
+
         if not force:
-            self._check_uri(uri)
+            self._check_uri(repo_uri)
 
         cmd = ['svn', 'update']
 
         if rev is not None:
             cmd.extend(['-r', rev])
 
-        cmd.append(uri)
+        cmd.append(repo_uri)
         command = Command(cmd, env={'LC_ALL': 'C'})
         self._run_command(command, UPDATE)
 
     def cat(self, uri, rev=None):
-        self._check_uri(uri)
+        repo_uri = get_auth_info(uri)['uri']
 
-        if os.path.exists(uri):
-            cwd = os.path.dirname(uri)
-            target = os.path.basename(uri)
+        self._check_uri(repo_uri)
+
+        if os.path.exists(repo_uri):
+            cwd = os.path.dirname(repo_uri)
+            target = os.path.basename(repo_uri)
         else:
             cwd = os.getcwd()
-            target = uri
+            target = repo_uri
 
         cmd = ['svn', 'cat']
 
@@ -249,17 +278,19 @@ class SVNRepository(Repository):
         self._run_command(command, CAT)
 
     def log(self, uri, rev=None, files=None):
-        self._check_uri(uri)
+        repo_uri = get_auth_info(uri)['uri']
 
-        if os.path.isfile(uri):
-            cwd = os.path.dirname(uri)
+        self._check_uri(repo_uri)
+
+        if os.path.isfile(repo_uri):
+            cwd = os.path.dirname(repo_uri)
             target = '.'
-        elif os.path.isdir(uri):
-            cwd = uri
+        elif os.path.isdir(repo_uri):
+            cwd = repo_uri
             target = '.'
         else:
             cwd = os.getcwd()
-            target = uri
+            target = repo_uri
 
         cmd = ['svn', '-v', 'log']
 
@@ -286,16 +317,18 @@ class SVNRepository(Repository):
         self.log(uri, rev, files)
 
     def diff(self, uri, branch=None, revs=None, files=None):
-        self._check_uri(uri)
+        repo_uri = get_auth_info(uri)['uri']
 
-        if os.path.isfile(uri):
-            cwd = os.path.dirname(uri)
+        self._check_uri(repo_uri)
+
+        if os.path.isfile(repo_uri):
+            cwd = os.path.dirname(repo_uri)
             target = '.'
-        elif os.path.isdir(uri):
-            cwd = uri
+        elif os.path.isdir(repo_uri):
+            cwd = repo_uri
             target = '.'
         else:
-            target = uri
+            target = repo_uri
             cwd = os.getcwd()
 
         cmd = ['svn', 'diff']
@@ -319,20 +352,22 @@ class SVNRepository(Repository):
         self._run_command(command, DIFF)
 
     def show(self, uri, rev=None):
-        self._check_uri(uri)
+        repo_uri = get_auth_info(uri)['uri']
 
-        if os.path.isfile(uri):
-            cwd = os.path.dirname(uri)
-            target = os.path.basename(uri)
-        elif os.path.isdir(uri):
-            cwd = uri
+        self._check_uri(repo_uri)
+
+        if os.path.isfile(repo_uri):
+            cwd = os.path.dirname(repo_uri)
+            target = os.path.basename(repo_uri)
+        elif os.path.isdir(repo_uri):
+            cwd = repo_uri
             target = '.'
         else:
-            target = uri
+            target = repo_uri
             cwd = os.getcwd()
 
         if rev is None:
-            info = get_info(uri)
+            info = get_info(repo_uri)
             rev = info['last changed rev']
 
         cmd = ['svn', 'diff', '-c', rev, target]
@@ -340,19 +375,21 @@ class SVNRepository(Repository):
         self._run_command(command, DIFF)
 
     def blame(self, uri, rev=None, files=None, mc=False):
+        repo_uri = get_auth_info(uri)['uri']
+
         # In SVN the path already contains the branch info
         # so no need for a branch parameter
-        self._check_uri(uri)
+        self._check_uri(repo_uri)
 
-        if os.path.isfile(uri):
-            cwd = os.path.dirname(uri)
-            target = os.path.basename(uri)
-        elif os.path.isdir(uri):
-            cwd = uri
+        if os.path.isfile(repo_uri):
+            cwd = os.path.dirname(repo_uri)
+            target = os.path.basename(repo_uri)
+        elif os.path.isdir(repo_uri):
+            cwd = repo_uri
             target = '.'
         else:
             cwd = os.getcwd()
-            target = uri
+            target = repo_uri
 
         if rev is not None and target != '.':
             target += "@%s" % (rev)
@@ -380,17 +417,19 @@ class SVNRepository(Repository):
         self._run_command(command, BLAME)
 
     def ls(self, uri, rev=None):
-        self._check_uri(uri)
+        repo_uri = get_auth_info(uri)['uri']
 
-        if os.path.isfile(uri):
-            cwd = os.path.dirname(uri)
-            target = os.path.basename(uri)
-        elif os.path.isdir(uri):
-            cwd = uri
+        self._check_uri(repo_uri)
+
+        if os.path.isfile(repo_uri):
+            cwd = os.path.dirname(repo_uri)
+            target = os.path.basename(repo_uri)
+        elif os.path.isdir(repo_uri):
+            cwd = repo_uri
             target = '.'
         else:
             cwd = os.getcwd()
-            target = uri
+            target = repo_uri
 
         cmd = ['svn', '-R', 'ls']
 
@@ -443,10 +482,12 @@ class SVNRepository(Repository):
         return retval
 
     def get_last_revision(self, uri):
-        self._check_uri(uri)
+        repo_uri = get_auth_info(uri)['uri']
+
+        self._check_uri(repo_uri)
 
         try:
-            info = get_info(uri)
+            info = get_info(repo_uri)
             if info is not None:
                 return info['last changed rev']
         except:
