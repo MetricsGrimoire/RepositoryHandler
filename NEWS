@@ -1,4 +1,26 @@
 ======================
+Repository Handler 0.5
+======================
+
+New features and API changes:
+    * Support for authentication in Subversion repositories.
+      The authentication is supported by passing user and
+      password within the URL (i.e https://user:passwd@svn.example.org)
+    * PEP8
+
+Bug fixes:
+    * SSL certificates in Subversion backend
+    * Streams not ended by '\n' are fully read
+    * Typos
+
+Thanks to all contributors:
+    * Luis Cañas Díaz
+    * Jesús M. Gonzalez-Barahona
+    * Santiago Dueñas
+    * Alvaro del Castillo
+    * Alexander Pepper
+
+======================
 Repository Handler 0.4
 ======================
 

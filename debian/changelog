@@ -1,3 +1,22 @@
+repositoryhandler (0.5-1) unstable; urgency=low
+
+  * feature: support for authentication in Subversion repositories
+
+  * bugfix: SSL certificates in Subversion backend
+
+  * bugfix: streams not ended by '\n' are fully read
+
+  * bugfix: typos
+
+  * debian:
+    - Maintainer changed
+    - Upstream-Contact updated
+    - Source updated
+    - Copyright dates updated
+    - format set to 3.0 quilt
+
+ -- Santiago Dueñas <sduenas@libresoft.es>  Fri, 15 Feb 2013 01:33:25 +0100
+
 repositoryhandler (0.4-1) unstable; urgency=low
 
   * New upstream bugfix release:

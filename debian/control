@@ -1,10 +1,10 @@
 Source: repositoryhandler
 Section: misc
 Priority: optional
-Maintainer: Luis Cañas Díaz <lcanas@libresoft.es>
+Maintainer: Santiago Dueñas <sduenas@libresoft.es>
 Build-Depends: cdbs, debhelper (>= 8), python-support, python (>= 2.4)
 Standards-Version: 3.9.2
-Homepage: http://projects.libresoft.es/projects/repositoryhandler
+Homepage: http://metricsgrimoire.github.com/RepositoryHandler
 
 Package: repositoryhandler
 Architecture: all
