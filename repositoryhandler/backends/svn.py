@@ -162,6 +162,12 @@ class SVNRepository(Repository):
             if question.strip() == SSL_CERTIFICATE_QUESTION:
                 Repository._run_command(self, command, type, 'p\n')
 
+    def _get_command_auth(self, command):
+        if (self.user is not None) and (self.passwd is not None):
+            return command + ['--username', self.user,
+                              '--password', self.passwd]
+        return command
+
     def _check_uri(self, uri):
         def is_local(uri):
             import re
@@ -229,6 +235,7 @@ class SVNRepository(Repository):
             uri += "@%s" % (rev)
 
         cmd = ['svn', 'checkout', uri]
+        cmd = self._get_command_auth(cmd)
 
         if newdir is not None:
             cmd.append(newdir)
@@ -247,6 +254,7 @@ class SVNRepository(Repository):
             self._check_uri(repo_uri)
 
         cmd = ['svn', 'update']
+        cmd = self._get_command_auth(cmd)
 
         if rev is not None:
             cmd.extend(['-r', rev])
@@ -268,6 +276,7 @@ class SVNRepository(Repository):
             target = repo_uri
 
         cmd = ['svn', 'cat']
+        cmd = self._get_command_auth(cmd)
 
         if rev is not None:
             target += '@%s' % (rev)
@@ -293,6 +302,7 @@ class SVNRepository(Repository):
             target = repo_uri
 
         cmd = ['svn', '-v', 'log']
+        cmd = self._get_command_auth(cmd)
 
         if rev is not None:
             cmd.extend(['-r', rev])
@@ -332,6 +342,7 @@ class SVNRepository(Repository):
             cwd = os.getcwd()
 
         cmd = ['svn', 'diff']
+        cmd = self._get_command_auth(cmd)
 
         if revs is not None:
             if len(revs) == 1:
@@ -367,10 +378,12 @@ class SVNRepository(Repository):
             cwd = os.getcwd()
 
         if rev is None:
-            info = get_info(repo_uri)
+            info = get_info(repo_uri, self.user, self.passwd)
             rev = info['last changed rev']
 
         cmd = ['svn', 'diff', '-c', rev, target]
+        cmd = self._get_command_auth(cmd)
+
         command = Command(cmd, cwd, env={'LC_ALL': 'C'})
         self._run_command(command, DIFF)
 
@@ -401,6 +414,7 @@ class SVNRepository(Repository):
                 target += '@'
 
         cmd = ['svn', '-v', 'blame']
+        cmd = self._get_command_auth(cmd)
 
         if files is not None:
             if target != '.':
@@ -432,6 +446,7 @@ class SVNRepository(Repository):
             target = repo_uri
 
         cmd = ['svn', '-R', 'ls']
+        cmd = self._get_command_auth(cmd)
 
         if rev is not None:
             if target == '.':
@@ -457,7 +472,7 @@ class SVNRepository(Repository):
         # Try the first layout
         uri = os.path.join(self.uri, 'trunk')
         try:
-            info = get_info(uri)
+            info = get_info(uri, self.user, self.passwd)
             if info is not None:
                 return [self.uri.split('/')[-1]]
         except CommandError:
@@ -471,7 +486,7 @@ class SVNRepository(Repository):
             uri = os.path.join(self.uri, module, 'trunk')
 
             try:
-                info = get_info(uri)
+                info = get_info(uri, self.user, self.passwd)
                 if info is None or info['node kind'] != 'directory':
                     continue
             except CommandError:
@@ -485,9 +500,8 @@ class SVNRepository(Repository):
         repo_uri = get_auth_info(uri)['uri']
 
         self._check_uri(repo_uri)
-
         try:
-            info = get_info(repo_uri)
+            info = get_info(repo_uri, self.user, self.passwd)
             if info is not None:
                 return info['last changed rev']
         except:
