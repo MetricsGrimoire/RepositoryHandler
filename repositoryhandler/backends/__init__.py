@@ -77,6 +77,10 @@ class Repository:
     def get_type(self):
         return self.type
 
+    def copy(self):
+        '''Create a copy of the repository object. Watchers should not be copied'''
+        raise NotImplementedError
+
     def checkout(self, uri, rootdir, newdir=None, branch=None, rev=None):
         '''Checkout uri to the given directory'''
         raise NotImplementedError

@@ -222,6 +222,9 @@ class TarballRepository(Repository):
     def __init__(self, uri):
         Repository.__init__(self, uri, 'tarball')
 
+    def copy(self):
+        return TarballRepository(self.uri)
+
     def checkout(self, module, rootdir, newdir=None, branch=None, rev=None):
         if newdir is not None:
             srcdir = os.path.join(rootdir, newdir)

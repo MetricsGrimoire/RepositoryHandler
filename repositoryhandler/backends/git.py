@@ -160,6 +160,11 @@ class GitRepository(Repository):
 
         return directory or self.uri
 
+    def copy(self):
+        repo = GitRepository(self.uri)
+        repo.git_version = self.git_version
+        return repo
+
     def checkout(self, module, rootdir, newdir=None, branch=None, rev=None):
         if newdir is not None:
             srcdir = os.path.join(rootdir, newdir)

@@ -102,6 +102,9 @@ class CVSRepository(Repository):
                                                '(expected %s but got %s)'
                                                % (srcdir, self.uri, uri))
 
+    def copy(self):
+        return CVSRepository(self.uri)
+
     def checkout(self, uri, rootdir, newdir=None, branch=None, rev=None):
         '''Checkout a module or path from repository
 

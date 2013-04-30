@@ -70,6 +70,9 @@ class BzrRepository(Repository):
                                                ' but got %s)'
                                                % (uri, self.uri, repo_uri))
 
+    def copy(self):
+        return BzrRepository(self.uri)
+
     def checkout(self, module, rootdir, newdir=None, branch=None, rev=None):
         # branch doesn't make sense here module == branch
         if newdir is not None:

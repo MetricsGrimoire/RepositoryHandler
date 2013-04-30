@@ -130,11 +130,16 @@ def get_repository_from_path(path):
 class SVNRepository(Repository):
     '''SVN Repository'''
 
-    def __init__(self, uri):
+    def __init__(self, uri, user=None, passwd=None):
         try:
             auth = get_auth_info(uri)
-            self.user = auth['user']
-            self.passwd = auth['password']
+
+            if (user is not None) and (passwd is not None):
+                self.user = user
+                self.passwd = passwd
+            else:
+                self.user = auth['user']
+                self.passwd = auth['password']
 
             info = get_info(auth['uri'], self.user, self.passwd)
             root = info['repository root']
@@ -204,6 +209,9 @@ class SVNRepository(Repository):
                                           'repository %s' % (branch, self.uri))
 
         return uri
+
+    def copy(self):
+        return SVNRepository(self.uri, self.user, self.passwd)
 
     def checkout(self, module, rootdir, newdir=None, branch=None, rev=None):
         if newdir is not None:
