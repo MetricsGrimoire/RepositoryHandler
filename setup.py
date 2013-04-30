@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2011 GSyC/LibreSoft, Universidad Rey Juan Carlos
+# Copyright (C) 2011-2013 GSyC/LibreSoft, Universidad Rey Juan Carlos
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,9 +20,9 @@
 from distutils.core import setup
 
 setup(name="RepositoryHandler",
-      version="0.4",
+      version="0.5.1",
       author="GSyC/LibreSoft, Universidad Rey Juan Carlos",
-      author_email="libresoft-tools-devel@lists.morfeo-project.org",
+      author_email="metrics-grimoire@lists.libresoft.es",
       description="Python library for handling code repositories",
-      url="https://projects.libresoft.es/projects/repositoryhandler",
+      url="http://github.com/MetricsGrimoire/RepositoryHandler",
       packages=['repositoryhandler', 'repositoryhandler.backends'])

@@ -1,3 +1,11 @@
+repositoryhandler (0.5.1-1) unstable; urgency=low
+
+  * feature: new method for copying repository objects
+
+  * bugfix: SVN authentication on clients that do not store auth data
+
+ -- Santiago Dueñas <sduenas@libresoft.es>  Tue, 30 Apr 2013 16:42:59 +0200
+
 repositoryhandler (0.5-1) unstable; urgency=low
 
   * feature: support for authentication in Subversion repositories
