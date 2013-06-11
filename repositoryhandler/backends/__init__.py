@@ -93,6 +93,10 @@ class Repository:
         '''Output the content of specified uri'''
         raise NotImplementedError
 
+    def size(self, uri, rev=None):
+        '''Output the content size of specified uri'''
+        raise NotImplementedError
+
     def log(self, uri, rev=None, files=None):
         '''Return log for working copy uri'''
         raise NotImplementedError
