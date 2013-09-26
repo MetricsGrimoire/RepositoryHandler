@@ -102,9 +102,14 @@ class GitRepository(Repository):
 
         command = Command(cmd)
         out = command.run_sync()
+        # it could looks like:
+        #  git version 1.7.10.4 // 1.8.4.rc3 // 1.7.12.4 (Apple Git-37)
 
         version = out.replace("git version ", "")
-        self.git_version = tuple([int(i) for i in version.split('.')])
+        try:
+            self.git_version = tuple([int(i) for i in version.split('.')])
+        except ValueError:
+            self.git_version = tuple([int(i) for i in version.split('.')[0:3]])
 
         return self.git_version
 
