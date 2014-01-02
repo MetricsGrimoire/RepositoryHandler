@@ -294,7 +294,7 @@ class SVNRepository(Repository):
         command = Command(cmd, cwd, env={'LC_ALL': 'C'})
         self._run_command(command, CAT)
 
-    def log(self, uri, rev=None, files=None):
+    def log(self, uri, rev=None, files=None, gitref=None):
         repo_uri = get_auth_info(uri)['uri']
 
         self._check_uri(repo_uri)

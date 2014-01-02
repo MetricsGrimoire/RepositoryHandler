@@ -115,7 +115,7 @@ class BzrRepository(Repository):
         command = Command(cmd, directory)
         self._run_command(command, UPDATE)
 
-    def log(self, uri, rev=None, files=None):
+    def log(self, uri, rev=None, files=None, gitref=None):
         self._check_uri(uri)
 
         if os.path.isfile(uri):

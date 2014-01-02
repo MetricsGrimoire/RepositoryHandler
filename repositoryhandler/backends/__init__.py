@@ -93,7 +93,7 @@ class Repository:
         '''Output the content of specified uri'''
         raise NotImplementedError
 
-    def log(self, uri, rev=None, files=None):
+    def log(self, uri, rev=None, files=None, gitref=None):
         '''Return log for working copy uri'''
         raise NotImplementedError
 

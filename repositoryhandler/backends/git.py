@@ -246,7 +246,7 @@ class GitRepository(Repository):
         command = Command(cmd, cwd, env={'PAGER': ''})
         self._run_command(command, CAT)
 
-    def log(self, uri, rev=None, files=None):
+    def log(self, uri, rev=None, files=None, gitref=None):
         self._check_uri(uri)
 
         if os.path.isfile(uri):
@@ -257,8 +257,9 @@ class GitRepository(Repository):
         else:
             cwd = os.getcwd()
 
-        cmd = ['git', 'log', '--all', '--topo-order', '--pretty=fuller',
-               '--parents', '--name-status', '-M', '-C']
+        cmd = ['git', 'log', '--topo-order', '--pretty=fuller',
+               '--parents', '--name-status', '-M', '-C',
+               "--all" if gitref is None else gitref]
 
         # Git < 1.6.4 -> --decorate
         # Git = 1.6.4 -> broken
