@@ -21,7 +21,7 @@ import re
 
 from repositoryhandler.Command import Command, CommandError
 from repositoryhandler.backends import Repository,\
-     RepositoryInvalidWorkingCopy, register_backend
+     RepositoryInvalidWorkingCopy, register_backend, RepositoryCommandError
 from repositoryhandler.backends.watchers import *
 
 
@@ -291,7 +291,10 @@ class GitRepository(Repository):
             cmd.append(uri)
 
         command = Command(cmd, cwd, env={'PAGER': ''})
-        self._run_command(command, LOG)
+        try:
+            self._run_command(command, LOG)
+        except RepositoryCommandError:
+            pass
 
     def rlog(self, module=None, rev=None, files=None):
         # Not supported by Git
