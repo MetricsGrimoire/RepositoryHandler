@@ -125,6 +125,10 @@ class Repository:
         '''Return the last revision'''
         raise NotImplementedError
 
+    def is_ancestor(self, rev1, rev2):
+        '''Decide if rev1 is an ancestor of rev2'''
+        raise  NotImplementedError
+
     def add_watch(self, type, callback, user_data=None):
         if type not in range(N_WATCHES):
             raise InvalidWatch('Type %d is not a valid watch type' % (type))
