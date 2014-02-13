@@ -434,12 +434,13 @@ class GitRepository(Repository):
 
         return out.strip('\n\t ')
 
-    def is_ancestor(self, rev1, rev2):
+    def is_ancestor(self, uri, rev1, rev2):
+        self._check_uri(uri)
         version = self._get_git_version()
         if version[0] >= 1 and version[1] >= 8:
             # 'git merge-base --is-ancestor' is only supported after 1.8
             cmd = ['git', 'merge-base', '--is-ancestor', rev1, rev2]
-            command = Command(cmd, self.uri, env={'PAGER': ''})
+            command = Command(cmd, uri, env={'PAGER': ''})
             try:
                 command.run()
                 return True

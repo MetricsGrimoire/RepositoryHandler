@@ -125,7 +125,7 @@ class Repository:
         '''Return the last revision'''
         raise NotImplementedError
 
-    def is_ancestor(self, rev1, rev2):
+    def is_ancestor(self, uri, rev1, rev2):
         '''Decide if rev1 is an ancestor of rev2'''
         raise  NotImplementedError
 
