@@ -19,7 +19,7 @@
 import os
 
 from repositoryhandler.Command import Command, CommandError,\
-     CommandRunningError
+    CommandRunningError
 from repositoryhandler.backends import(Repository,
                                        RepositoryInvalidWorkingCopy,
                                        RepositoryInvalidBranch,
@@ -47,9 +47,9 @@ def run_command_sync(command):
 def get_auth_info(uri):
     import re
 
-    auth = {'uri' : uri,
-            'user' : None,
-            'password' : None}
+    auth = {'uri': uri,
+            'user': None,
+            'password': None}
 
     m = re.compile("^.*://(.+):(.+)@.*$").match(uri)
     if m is not None:
@@ -58,6 +58,7 @@ def get_auth_info(uri):
         auth['uri'] = uri.replace(auth['user'] + ':'
                                   + auth['password'] + '@', '')
     return auth
+
 
 def get_info(uri, user=None, passwd=None):
     if os.path.isdir(uri):

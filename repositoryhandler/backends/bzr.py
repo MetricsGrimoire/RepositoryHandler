@@ -21,7 +21,7 @@ import os
 
 from repositoryhandler.Command import Command, CommandError
 from repositoryhandler.backends import Repository, \
-     RepositoryInvalidWorkingCopy, register_backend
+    RepositoryInvalidWorkingCopy, register_backend
 from repositoryhandler.backends.watchers import *
 
 
@@ -50,8 +50,10 @@ def get_repository_from_path(path):
                                            'working copy' % path)
 
     if uri is None:
-        raise RepositoryInvalidWorkingCopy('"%s" does not appear to be a Bzr'
-                                            ' working copy' % path)
+        raise RepositoryInvalidWorkingCopy(
+            '"%s" does not appear to be a Bzr'
+            ' working copy' % path
+        )
 
     return 'bzr', uri
 

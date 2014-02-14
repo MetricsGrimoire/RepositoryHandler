@@ -2,10 +2,10 @@ import sys
 import os
 
 __all__ = [
-        'Test',
-        'remove_directory',
-        'register_test',
-        'get_test'
+    'Test',
+    'remove_directory',
+    'register_test',
+    'get_test'
 ]
 
 

@@ -1,7 +1,7 @@
 import os
 import re
 from repositoryhandler.backends import create_repository,\
-     create_repository_from_path, RepositoryUnknownError
+    create_repository_from_path, RepositoryUnknownError
 from repositoryhandler.backends.watchers import *
 from tests import Test, register_test, remove_directory
 
