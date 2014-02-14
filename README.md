@@ -1,18 +1,14 @@
-Description
------------
+# RepositoryHandler
 
-RepositoryHandler is a python library for handling code repositories 
-through a common interface.
+## Description
 
-How to get RepositoryHandler
-----------------------------
+RepositoryHandler is a python library for handling code repositories through a common interface.
 
-Latest version:
+## How to get RepositoryHandler
 
-* git clone https://github.com/MetricsGrimoire/RepositoryHandler.git
+Latest version: ```git clone https://github.com/MetricsGrimoire/RepositoryHandler.git```
 
-Supported repository types
---------------------------
+## Supported repository types
 
  * CVS
  * SVN
@@ -25,31 +21,30 @@ Optional:
  * ARCH (not implemented yet)
  * DARCS (not implemented yet)
 
-Dependencies
-------------
+## Dependencies
 
  * Python >= 2.4
  * CVS client
  * SVN client
+ * Git client
  * WGET or curl
  * Autoconf (for installation)
 
-How to install
---------------
+## How to install
 
 To be used from other packages, RepositoryHandler should be installed:
 
-     > # python setup.py install
+     $ python setup.py install
 
-If root access is not possible, the "sudo" command will not be run,
-and the package will stay installed in the current directory. It can
-be used there by including it in the PKG_CONFIG_PATH environment variable.
+If root access is not possible, the "sudo" command will not be run and the package will stay installed in the current directory. 
 
-Examples
---------
+It can be used there by including it in the `PKG_CONFIG_PATH` environment variable.
 
- * CVS Repository
+## Examples
 
+### CVS Repository
+
+```python
 from repositoryhandler.backends import create_repository
 
 # create a cvs repository for poppler on FreeDesktop
@@ -68,4 +63,4 @@ print diff
 # show history for ChangeLog file
 history = repo.log ('/tmp/poppler', files = ['ChangeLog'])
 print history
-
+```
