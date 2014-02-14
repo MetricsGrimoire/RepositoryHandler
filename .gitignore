@@ -9,6 +9,7 @@ config.status
 configure
 install-sh
 *.pc
+.idea
 missing
 py-compile
 INSTALL
