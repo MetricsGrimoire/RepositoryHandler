@@ -85,7 +85,7 @@ class Command:
                 else:
                     raise
 
-    def _read_from_pipes(self, stdin=None, out_data_cb=None, err_data_cb=None,\
+    def _read_from_pipes(self, stdin=None, out_data_cb=None, err_data_cb=None,
                          timeout=None):
         p = self.process
 
@@ -234,11 +234,12 @@ class Command:
         if self.process is not None:
             return self.process
 
-        kws = {'close_fds': True,
-               'stdout': subprocess.PIPE,
-               'stderr': subprocess.PIPE,
-               'stdin': subprocess.PIPE,
-               'env': os.environ.copy()
+        kws = {
+            'close_fds': True,
+            'stdout': subprocess.PIPE,
+            'stderr': subprocess.PIPE,
+            'stdin': subprocess.PIPE,
+            'env': os.environ.copy()
         }
 
         if self.cwd is not None:

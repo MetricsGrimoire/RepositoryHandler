@@ -21,7 +21,7 @@ import re
 
 from repositoryhandler.Command import Command, CommandError
 from repositoryhandler.backends import Repository,\
-     RepositoryInvalidWorkingCopy, register_backend, RepositoryCommandError
+    RepositoryInvalidWorkingCopy, register_backend, RepositoryCommandError
 from repositoryhandler.backends.watchers import *
 
 

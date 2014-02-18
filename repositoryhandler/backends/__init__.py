@@ -22,16 +22,16 @@ from repositoryhandler.Command import CommandError, CommandRunningError
 DEBUG = False
 
 __all__ = [
-        'Repository',
-        'RepositoryUnknownError',
-        'RepositoryInvalidWorkingCopy',
-        'RepositoryInvalidBranch',
-        'InvalidWatch',
-        'RepositoryCommandError',
-        'RepositoryCommandRunningError',
-        'create_repository',
-        'register_backend',
-        'create_repository_from_path'
+    'Repository',
+    'RepositoryUnknownError',
+    'RepositoryInvalidWorkingCopy',
+    'RepositoryInvalidBranch',
+    'InvalidWatch',
+    'RepositoryCommandError',
+    'RepositoryCommandRunningError',
+    'create_repository',
+    'register_backend',
+    'create_repository_from_path'
 ]
 
 
@@ -78,7 +78,8 @@ class Repository:
         return self.type
 
     def copy(self):
-        '''Create a copy of the repository object. Watchers should not be copied'''
+        ''' Create a copy of the repository object.
+            Watchers should not be copied'''
         raise NotImplementedError
 
     def checkout(self, uri, rootdir, newdir=None, branch=None, rev=None):
