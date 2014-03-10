@@ -277,7 +277,11 @@ class GitRepository(Repository):
 
         try:
             get_config(uri, 'remote.origin.url')
-            cmd.append('origin')
+
+            if major <= 1 and minor < 8:
+                cmd.append('origin')
+            else:
+                cmd.append('--remotes=origin')
         except CommandError:
             pass
 
