@@ -246,13 +246,13 @@ class GitRepository(Repository):
         command = Command(cmd, cwd, env={'PAGER': ''})
         self._run_command(command, CAT)
 
-    def size(self, uri, rev = None):
+    def size(self, uri, rev=None):
         self._check_uri(uri)
 
         cmd = ['git', 'cat-file', '-s']
 
         cwd = self.__get_root_dir(uri)
-        target = uri[len(cwd):].strip ("/")
+        target = uri[len(cwd):].strip("/")
 
         if rev is not None:
             target = "%s:%s" % (rev, target)
@@ -260,10 +260,10 @@ class GitRepository(Repository):
             target = "HEAD:%s" % (target)
 
         cmd.append(target)
-        
-        command = Command(cmd, cwd, env = {'PAGER' : ''})
+
+        command = Command(cmd, cwd, env={'PAGER': ''})
         self._run_command(command, SIZE)
-        
+
     def log(self, uri, rev=None, files=None, gitref=None):
         self._check_uri(uri)
 
@@ -302,7 +302,7 @@ class GitRepository(Repository):
                 cmd.append('--remotes=origin')
         except CommandError:
             pass
-       
+
         if gitref:
             cmd.append(gitref)
         else:
@@ -476,12 +476,13 @@ class GitRepository(Repository):
                 if e.returncode == 1:
                     return False
                 else:
-                    raise  e
+                    raise e
         else:
             # Should we implement an workaround for git under 1.8 or
             # just have git 1.8 or later in prerequisites?
-            # An workaround can be found http://stackoverflow.com/a/3006203/1305362
-            raise NotImplementedError;
+            # An workaround can be found at
+            # http://stackoverflow.com/a/3006203/1305362
+            raise NotImplementedError
 
 
 register_backend('git', GitRepository)
