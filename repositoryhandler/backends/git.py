@@ -264,7 +264,7 @@ class GitRepository(Repository):
         command = Command(cmd, cwd, env = {'PAGER' : ''})
         self._run_command(command, SIZE)
         
-    def log(self, uri, rev=None, files=None):
+    def log(self, uri, rev=None, files=None, gitref=None):
         self._check_uri(uri)
 
         if os.path.isfile(uri):
@@ -275,7 +275,7 @@ class GitRepository(Repository):
         else:
             cwd = os.getcwd()
 
-        cmd = ['git', 'log', '--all', '--topo-order', '--pretty=fuller',
+        cmd = ['git', 'log', '--topo-order', '--pretty=fuller',
                '--parents', '--name-status', '-M', '-C', '-c']
 
         # Git < 1.6.4 -> --decorate
@@ -302,11 +302,17 @@ class GitRepository(Repository):
                 cmd.append('--remotes=origin')
         except CommandError:
             pass
+       
+        if gitref:
+            cmd.append(gitref)
+        else:
+            cmd.append('--all')
 
         if rev is not None:
             cmd.append(rev)
 
-        if files is not None:
+        if files:
+            cmd.append('--')
             for file in files:
                 cmd.append(file)
         elif cwd != uri:
