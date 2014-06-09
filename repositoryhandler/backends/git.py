@@ -465,24 +465,25 @@ class GitRepository(Repository):
     def is_ancestor(self, uri, rev1, rev2):
         self._check_uri(uri)
         version = self._get_git_version()
-        if version[0] >= 1 and version[1] >= 8:
-            # 'git merge-base --is-ancestor' is only supported after 1.8
-            cmd = ['git', 'merge-base', '--is-ancestor', rev1, rev2]
-            command = Command(cmd, uri, env={'PAGER': ''})
-            try:
-                command.run()
-                return True
-            except CommandError as e:
-                if e.returncode == 1:
-                    return False
-                else:
-                    raise e
-        else:
+
+        if version[0] == 0 or (version[0] == 1 and version[1] < 8):
             # Should we implement an workaround for git under 1.8 or
             # just have git 1.8 or later in prerequisites?
             # An workaround can be found at
             # http://stackoverflow.com/a/3006203/1305362
             raise NotImplementedError
+
+        # 'git merge-base --is-ancestor' is only supported after 1.8
+        cmd = ['git', 'merge-base', '--is-ancestor', rev1, rev2]
+        command = Command(cmd, uri, env={'PAGER': ''})
+        try:
+            command.run()
+            return True
+        except CommandError as e:
+            if e.returncode == 1:
+                return False
+            else:
+                raise e
 
 
 register_backend('git', GitRepository)
