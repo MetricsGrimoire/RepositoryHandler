@@ -293,19 +293,19 @@ class GitRepository(Repository):
         else:
             cmd.append('--decorate=full')
 
-        try:
-            get_config(uri, 'remote.origin.url')
-
-            if major <= 1 and minor < 8:
-                cmd.append('origin')
-            else:
-                cmd.append('--remotes=origin')
-        except CommandError:
-            pass
 
         if gitref:
             cmd.append(gitref)
         else:
+            try:
+                get_config(uri, 'remote.origin.url')
+
+                if major <= 1 and minor < 8:
+                    cmd.append('origin')
+                else:
+                    cmd.append('--remotes=origin')
+            except CommandError:
+                pass
             cmd.append('--all')
 
         if rev is not None:
