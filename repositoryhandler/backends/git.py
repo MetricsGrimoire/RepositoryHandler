@@ -205,7 +205,11 @@ class GitRepository(Repository):
         else:
             cmd.append(module)
 
-        command = Command(cmd, rootdir)
+        def ignore_progress_stderr(*args):
+            return True
+
+        command = Command(cmd, rootdir,
+                          error_handler_func=ignore_progress_stderr)
         self._run_command(command, CHECKOUT)
 
         if branch is not None:
